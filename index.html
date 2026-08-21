@@ -4,19 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Santa Cruz Pet Watch | Lost & Found Pets</title>
+<title>Santa Cruz Pet Watch | Paw Bounty</title>
 
-<meta
-    name="description"
-    content="Santa Cruz Pet Watch helps residents of Santa Cruz de la Sierra report, find and reunite lost and found pets."
->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-
-/* =========================================================
-   RESET
-========================================================= */
-
 * {
     margin: 0;
     padding: 0;
@@ -30,1300 +22,1057 @@ html {
 body {
     font-family: Inter, Arial, Helvetica, sans-serif;
     background:
-        radial-gradient(circle at 10% 10%, rgba(255, 193, 7, .12), transparent 30%),
-        radial-gradient(circle at 90% 20%, rgba(59, 130, 246, .12), transparent 30%),
+        radial-gradient(circle at 10% 10%, rgba(255,193,7,.12), transparent 30%),
+        radial-gradient(circle at 90% 20%, rgba(59,130,246,.12), transparent 30%),
         #080b16;
     color: #f8fafc;
     min-height: 100vh;
 }
 
-/* =========================================================
-   VARIABLES
-========================================================= */
-
 :root {
-    --bg: #080b16;
-    --panel: rgba(18, 23, 40, .88);
-    --panel-light: #151b2f;
-    --border: rgba(255,255,255,.09);
-
-    --yellow: #ffc857;
-    --orange: #ff7a45;
-    --red: #ff5263;
-    --green: #38e8a1;
-    --blue: #5b8cff;
-    --purple: #a855f7;
-
-    --text: #f8fafc;
-    --muted: #94a3b8;
+    --bg:#080b16;
+    --panel:rgba(18,23,40,.86);
+    --border:rgba(255,255,255,.09);
+    --yellow:#ffc857;
+    --orange:#ff7a45;
+    --red:#ff5263;
+    --green:#38e8a1;
+    --blue:#5b8cff;
+    --purple:#a855f7;
+    --text:#f8fafc;
+    --muted:#94a3b8;
 }
-
-/* =========================================================
-   GENERAL
-========================================================= */
 
 button,
 input,
-select,
-textarea {
-    font: inherit;
+textarea,
+select {
+    font-family: inherit;
 }
 
 button {
-    cursor: pointer;
+    cursor:pointer;
 }
 
-a {
-    color: inherit;
-}
-
-.hidden {
-    display: none !important;
-}
-
-/* =========================================================
-   HEADER
-========================================================= */
+/* HEADER */
 
 header {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    backdrop-filter: blur(20px);
-    background: rgba(8, 11, 22, .88);
-    border-bottom: 1px solid var(--border);
+    position:sticky;
+    top:0;
+    z-index:1000;
+    backdrop-filter:blur(20px);
+    background:rgba(8,11,22,.9);
+    border-bottom:1px solid var(--border);
 }
 
 .navbar {
-    max-width: 1250px;
-    margin: auto;
-    padding: 16px 22px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
+    max-width:1250px;
+    margin:auto;
+    padding:14px 22px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
 }
 
 .logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    display:flex;
+    align-items:center;
+    gap:11px;
 }
 
 .logo-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 14px;
-    background: linear-gradient(135deg, var(--yellow), var(--orange));
-    display: grid;
-    place-items: center;
-    font-size: 24px;
-    box-shadow: 0 8px 30px rgba(255, 122, 69, .25);
+    width:44px;
+    height:44px;
+    border-radius:14px;
+    background:linear-gradient(135deg,var(--yellow),var(--orange));
+    display:grid;
+    place-items:center;
+    font-size:24px;
 }
 
 .logo-text h1 {
-    font-size: 18px;
-    letter-spacing: -.5px;
+    font-size:18px;
 }
 
 .logo-text span {
-    color: var(--yellow);
+    color:var(--yellow);
 }
 
 .logo-text small {
-    color: var(--muted);
-    font-size: 11px;
+    color:var(--muted);
+    font-size:10px;
 }
 
 .nav-links {
-    display: flex;
-    gap: 8px;
+    display:flex;
+    gap:5px;
 }
 
+.nav-links button,
 .nav-links a {
-    color: #cbd5e1;
-    text-decoration: none;
-    padding: 9px 13px;
-    border-radius: 10px;
-    font-size: 13px;
-    transition: .2s;
+    color:#cbd5e1;
+    background:transparent;
+    border:0;
+    text-decoration:none;
+    padding:9px 12px;
+    border-radius:10px;
+    font-size:13px;
 }
 
+.nav-links button:hover,
 .nav-links a:hover {
-    background: rgba(255,255,255,.07);
-    color: white;
+    background:rgba(255,255,255,.07);
+    color:white;
+}
+
+.user-area {
+    display:flex;
+    align-items:center;
+    gap:8px;
 }
 
 .points-pill {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    background: rgba(255,200,87,.1);
-    border: 1px solid rgba(255,200,87,.25);
-    color: var(--yellow);
-    padding: 9px 13px;
-    border-radius: 999px;
-    font-size: 13px;
-    font-weight: 800;
+    background:rgba(255,200,87,.1);
+    border:1px solid rgba(255,200,87,.25);
+    color:var(--yellow);
+    padding:9px 13px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:800;
 }
 
-/* =========================================================
-   HERO
-========================================================= */
+.auth-btn {
+    padding:9px 13px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:rgba(255,255,255,.06);
+    color:white;
+    font-weight:700;
+}
+
+/* HERO */
 
 .hero {
-    max-width: 1250px;
-    margin: auto;
-    padding: 70px 22px 40px;
-    display: grid;
-    grid-template-columns: 1.4fr .6fr;
-    gap: 35px;
-    align-items: center;
-}
-
-.hero-content {
-    position: relative;
+    max-width:1250px;
+    margin:auto;
+    padding:70px 22px 45px;
+    display:grid;
+    grid-template-columns:1.4fr .6fr;
+    gap:35px;
+    align-items:center;
 }
 
 .eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--green);
-    background: rgba(56,232,161,.08);
-    border: 1px solid rgba(56,232,161,.2);
-    padding: 8px 12px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 800;
-    margin-bottom: 18px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    color:var(--green);
+    background:rgba(56,232,161,.08);
+    border:1px solid rgba(56,232,161,.2);
+    padding:8px 12px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:800;
+    margin-bottom:18px;
 }
 
 .live-dot {
-    width: 7px;
-    height: 7px;
-    background: var(--green);
-    border-radius: 50%;
-    box-shadow: 0 0 12px var(--green);
+    width:7px;
+    height:7px;
+    background:var(--green);
+    border-radius:50%;
+    box-shadow:0 0 12px var(--green);
 }
 
 .hero h2 {
-    font-size: clamp(42px, 6vw, 78px);
-    line-height: .95;
-    letter-spacing: -4px;
-    max-width: 780px;
+    font-size:clamp(42px,6vw,78px);
+    line-height:.95;
+    letter-spacing:-4px;
 }
 
-.hero h2 .gradient {
-    background: linear-gradient(
-        90deg,
-        var(--yellow),
-        var(--orange),
-        #ff4f81
-    );
-    -webkit-background-clip: text;
-    color: transparent;
+.gradient {
+    background:linear-gradient(90deg,var(--yellow),var(--orange),#ff4f81);
+    -webkit-background-clip:text;
+    color:transparent;
 }
 
 .hero p {
-    color: var(--muted);
-    max-width: 650px;
-    line-height: 1.7;
-    margin-top: 22px;
-    font-size: 16px;
+    color:var(--muted);
+    max-width:650px;
+    line-height:1.7;
+    margin-top:22px;
 }
 
 .hero-buttons {
-    display: flex;
-    gap: 12px;
-    margin-top: 28px;
-    flex-wrap: wrap;
+    display:flex;
+    gap:12px;
+    margin-top:28px;
+    flex-wrap:wrap;
 }
 
 .btn {
-    border: none;
-    text-decoration: none;
-    cursor: pointer;
-    padding: 13px 19px;
-    border-radius: 12px;
-    font-weight: 800;
-    font-size: 13px;
-    transition: .2s;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
+    border:none;
+    text-decoration:none;
+    padding:13px 19px;
+    border-radius:12px;
+    font-weight:800;
+    font-size:13px;
+    transition:.2s;
 }
 
 .btn-primary {
-    color: #111827;
-    background: linear-gradient(135deg, var(--yellow), var(--orange));
-    box-shadow: 0 10px 30px rgba(255,122,69,.2);
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 35px rgba(255,122,69,.35);
+    color:#111827;
+    background:linear-gradient(135deg,var(--yellow),var(--orange));
 }
 
 .btn-secondary {
-    color: white;
-    background: rgba(255,255,255,.06);
-    border: 1px solid var(--border);
+    color:white;
+    background:rgba(255,255,255,.06);
+    border:1px solid var(--border);
 }
 
-.btn-secondary:hover {
-    background: rgba(255,255,255,.1);
+.btn:hover {
+    transform:translateY(-2px);
 }
 
-/* =========================================================
-   BOUNTY CARD
-========================================================= */
-
-.bounty-preview {
-    position: relative;
-}
+/* BOUNTY */
 
 .bounty-card {
     background:
-        linear-gradient(145deg, rgba(255,200,87,.12), rgba(168,85,247,.07)),
+        linear-gradient(145deg,rgba(255,200,87,.12),rgba(168,85,247,.07)),
         var(--panel);
-    border: 1px solid rgba(255,200,87,.2);
-    border-radius: 25px;
-    padding: 25px;
-    box-shadow: 0 30px 80px rgba(0,0,0,.35);
-    transform: rotate(2deg);
+    border:1px solid rgba(255,200,87,.2);
+    border-radius:25px;
+    padding:25px;
+    box-shadow:0 30px 80px rgba(0,0,0,.35);
+    transform:rotate(2deg);
 }
 
 .bounty-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display:flex;
+    justify-content:space-between;
 }
 
 .bounty-label {
-    color: var(--yellow);
-    font-weight: 900;
-    font-size: 12px;
-    letter-spacing: 1px;
+    color:var(--yellow);
+    font-weight:900;
+    font-size:12px;
 }
 
 .reward {
-    color: #111827;
-    background: var(--yellow);
-    padding: 7px 10px;
-    border-radius: 8px;
-    font-weight: 900;
-    font-size: 12px;
+    color:#111827;
+    background:var(--yellow);
+    padding:7px 10px;
+    border-radius:8px;
+    font-weight:900;
+    font-size:12px;
 }
 
 .preview-icon {
-    width: 110px;
-    height: 110px;
-    margin: 25px auto;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    font-size: 60px;
-    background:
-        radial-gradient(circle, rgba(255,200,87,.25), transparent 65%);
-    border: 1px solid rgba(255,200,87,.2);
+    width:110px;
+    height:110px;
+    margin:25px auto;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    font-size:60px;
+    background:radial-gradient(circle,rgba(255,200,87,.25),transparent 65%);
 }
 
-.bounty-card h3 {
-    text-align: center;
-    font-size: 25px;
+.bounty-card h3,
+.bounty-card p {
+    text-align:center;
 }
 
 .bounty-card p {
-    text-align: center;
-    color: var(--muted);
-    margin-top: 7px;
-    font-size: 13px;
+    color:var(--muted);
+    margin-top:7px;
+    font-size:13px;
 }
 
 .mini-stats {
-    display: grid;
-    grid-template-columns: repeat(2,1fr);
-    gap: 10px;
-    margin-top: 20px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:20px;
 }
 
 .mini-stat {
-    background: rgba(0,0,0,.2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 12px;
+    background:rgba(0,0,0,.2);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:12px;
 }
 
 .mini-stat small {
-    color: var(--muted);
-    display: block;
+    color:var(--muted);
+    display:block;
 }
 
-.mini-stat strong {
-    display: block;
-    margin-top: 4px;
-}
-
-/* =========================================================
-   MAIN
-========================================================= */
+/* MAIN */
 
 .container {
-    max-width: 1250px;
-    margin: auto;
-    padding: 20px 22px 70px;
+    max-width:1250px;
+    margin:auto;
+    padding:20px 22px 70px;
 }
 
 .section-heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: end;
-    gap: 20px;
-    margin-bottom: 22px;
+    margin-bottom:22px;
 }
 
 .section-heading h2 {
-    font-size: 28px;
-    letter-spacing: -.8px;
+    font-size:28px;
 }
 
 .section-heading p {
-    color: var(--muted);
-    margin-top: 5px;
-    font-size: 13px;
+    color:var(--muted);
+    margin-top:5px;
+    font-size:13px;
 }
 
-/* =========================================================
-   STATS
-========================================================= */
+/* STATS */
 
 .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4,1fr);
-    gap: 14px;
-    margin-bottom: 50px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    margin-bottom:50px;
 }
 
 .stat-card {
-    padding: 20px;
-    border-radius: 18px;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    position: relative;
-    overflow: hidden;
-}
-
-.stat-card::after {
-    content: "";
-    position: absolute;
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: var(--accent);
-    opacity: .08;
-    right: -20px;
-    top: -20px;
+    padding:20px;
+    border-radius:18px;
+    background:var(--panel);
+    border:1px solid var(--border);
 }
 
 .stat-icon {
-    font-size: 20px;
+    font-size:20px;
 }
 
 .stat-number {
-    font-size: 30px;
-    font-weight: 900;
-    margin-top: 8px;
+    font-size:30px;
+    font-weight:900;
+    margin-top:8px;
 }
 
 .stat-label {
-    color: var(--muted);
-    font-size: 12px;
-    margin-top: 3px;
+    color:var(--muted);
+    font-size:12px;
+    margin-top:3px;
 }
 
-/* =========================================================
-   FILTERS
-========================================================= */
+/* FILTER */
 
 .filter-box {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 18px;
-    margin-bottom: 25px;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:18px;
+    margin-bottom:25px;
 }
 
 .filter-row {
-    display: grid;
-    grid-template-columns: 1.4fr 1fr 1fr auto;
-    gap: 12px;
+    display:grid;
+    grid-template-columns:1fr 1fr auto;
+    gap:12px;
 }
 
 .filter-group label {
-    display: block;
-    color: var(--muted);
-    font-size: 11px;
-    font-weight: 800;
-    text-transform: uppercase;
-    margin-bottom: 7px;
+    display:block;
+    color:var(--muted);
+    font-size:11px;
+    font-weight:800;
+    text-transform:uppercase;
+    margin-bottom:7px;
 }
 
-input,
 select,
+input,
 textarea {
-    width: 100%;
-    padding: 13px;
-    border-radius: 11px;
-    border: 1px solid var(--border);
-    background: #0d1221;
-    color: white;
-    outline: none;
+    width:100%;
+    padding:13px;
+    border-radius:11px;
+    border:1px solid var(--border);
+    background:#0d1221;
+    color:white;
+    outline:none;
 }
 
-input:focus,
 select:focus,
+input:focus,
 textarea:focus {
-    border-color: var(--yellow);
-    box-shadow: 0 0 0 3px rgba(255,200,87,.06);
+    border-color:var(--yellow);
 }
 
 .reset-btn {
-    align-self: end;
-    padding: 13px 18px;
-    border-radius: 11px;
-    background: rgba(255,255,255,.06);
-    border: 1px solid var(--border);
-    color: white;
-    cursor: pointer;
-    font-weight: 700;
+    align-self:end;
+    padding:13px 18px;
+    border-radius:11px;
+    background:rgba(255,255,255,.06);
+    border:1px solid var(--border);
+    color:white;
+    font-weight:700;
 }
 
-/* =========================================================
-   PET GRID
-========================================================= */
+/* PET GRID */
 
 .pet-grid {
-    display: grid;
-    grid-template-columns: repeat(3,1fr);
-    gap: 20px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
 }
 
 .pet-card {
-    overflow: hidden;
-    border-radius: 20px;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    transition: .25s;
-    position: relative;
+    overflow:hidden;
+    border-radius:20px;
+    background:var(--panel);
+    border:1px solid var(--border);
+    transition:.25s;
 }
 
 .pet-card:hover {
-    transform: translateY(-7px);
-    border-color: rgba(255,255,255,.17);
-    box-shadow: 0 25px 50px rgba(0,0,0,.3);
+    transform:translateY(-7px);
+    box-shadow:0 25px 50px rgba(0,0,0,.3);
 }
 
 .pet-image-wrap {
-    position: relative;
-    height: 230px;
-    background: #111827;
-    overflow: hidden;
+    position:relative;
+    height:230px;
+    background:#111827;
 }
 
 .pet-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: .4s;
+    width:100%;
+    height:100%;
+    object-fit:cover;
 }
 
-.pet-card:hover .pet-image {
-    transform: scale(1.05);
+.status-badge,
+.points-badge {
+    position:absolute;
+    top:13px;
+    padding:7px 10px;
+    border-radius:999px;
+    font-size:11px;
+    font-weight:900;
 }
 
 .status-badge {
-    position: absolute;
-    left: 13px;
-    top: 13px;
-    padding: 7px 11px;
-    border-radius: 999px;
-    font-size: 11px;
-    font-weight: 900;
-    backdrop-filter: blur(10px);
+    left:13px;
 }
 
 .status-lost {
-    background: rgba(255,82,99,.9);
-    color: white;
+    background:rgba(255,82,99,.9);
 }
 
 .status-found {
-    background: rgba(56,232,161,.9);
-    color: #06271b;
-}
-
-.status-reunited {
-    background: rgba(91,140,255,.9);
-    color: white;
+    background:rgba(56,232,161,.9);
+    color:#06271b;
 }
 
 .points-badge {
-    position: absolute;
-    right: 13px;
-    top: 13px;
-    padding: 7px 10px;
-    border-radius: 999px;
-    background: rgba(8,11,22,.85);
-    color: var(--yellow);
-    font-size: 11px;
-    font-weight: 900;
+    right:13px;
+    background:rgba(8,11,22,.9);
+    color:var(--yellow);
 }
 
 .pet-info {
-    padding: 19px;
-}
-
-.pet-title {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
+    padding:19px;
 }
 
 .pet-title h3 {
-    font-size: 20px;
+    font-size:20px;
 }
 
 .pet-type {
-    color: var(--muted);
-    font-size: 12px;
-    margin-top: 3px;
+    color:var(--muted);
+    font-size:12px;
+    margin-top:3px;
 }
 
 .pet-details {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 16px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:16px;
 }
 
 .detail {
-    background: rgba(255,255,255,.035);
-    padding: 9px;
-    border-radius: 9px;
+    background:rgba(255,255,255,.035);
+    padding:9px;
+    border-radius:9px;
 }
 
 .detail span {
-    display: block;
-    color: var(--muted);
-    font-size: 10px;
+    display:block;
+    color:var(--muted);
+    font-size:10px;
 }
 
 .detail strong {
-    display: block;
-    margin-top: 3px;
-    font-size: 12px;
+    display:block;
+    margin-top:3px;
+    font-size:12px;
 }
 
 .description {
-    color: #cbd5e1;
-    font-size: 12px;
-    line-height: 1.6;
-    margin-top: 15px;
+    color:#cbd5e1;
+    font-size:12px;
+    line-height:1.6;
+    margin-top:15px;
 }
 
 .contact {
-    margin-top: 15px;
-    padding-top: 14px;
-    border-top: 1px solid var(--border);
+    margin-top:15px;
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+    padding-top:14px;
+    border-top:1px solid var(--border);
 }
 
 .contact-number {
-    color: var(--green);
-    font-weight: 800;
-    font-size: 12px;
-    display: block;
-    margin-bottom: 12px;
+    color:var(--green);
+    font-size:12px;
+    font-weight:800;
 }
 
-.card-actions {
-    display: grid;
-    grid-template-columns: repeat(2,1fr);
-    gap: 7px;
+.help-btn {
+    background:rgba(255,200,87,.1);
+    border:1px solid rgba(255,200,87,.2);
+    color:var(--yellow);
+    padding:8px 10px;
+    border-radius:9px;
+    font-size:11px;
+    font-weight:800;
 }
 
-.action-btn {
-    padding: 9px 7px;
-    border-radius: 9px;
-    border: 1px solid var(--border);
-    background: rgba(255,255,255,.045);
-    color: white;
-    font-size: 10px;
-    font-weight: 800;
-    transition: .2s;
-}
-
-.action-btn:hover {
-    background: rgba(255,255,255,.1);
-}
-
-.action-btn.help {
-    color: var(--yellow);
-    border-color: rgba(255,200,87,.2);
-}
-
-.action-btn.share {
-    color: var(--blue);
-}
-
-.action-btn.reunite {
-    color: var(--green);
-}
-
-.action-btn.delete {
-    color: var(--red);
-}
-
-/* =========================================================
-   EMPTY STATE
-========================================================= */
-
-.empty {
-    grid-column: 1/-1;
-    padding: 60px 20px;
-    text-align: center;
-    background: var(--panel);
-    border: 1px dashed var(--border);
-    border-radius: 20px;
-}
-
-.empty-icon {
-    font-size: 45px;
-}
-
-.empty h3 {
-    margin-top: 10px;
-}
-
-.empty p {
-    color: var(--muted);
-    margin-top: 5px;
-}
-
-/* =========================================================
-   LEADERBOARD
-========================================================= */
-
-.leaderboard-section {
-    margin-top: 60px;
-}
-
-.leaderboard-layout {
-    display: grid;
-    grid-template-columns: 1.5fr .5fr;
-    gap: 20px;
-}
-
-.leaderboard {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    overflow: hidden;
-}
-
-.leader-row {
-    display: grid;
-    grid-template-columns: 50px 1fr auto;
-    align-items: center;
-    gap: 15px;
-    padding: 17px 20px;
-    border-bottom: 1px solid var(--border);
-}
-
-.leader-row:last-child {
-    border-bottom: none;
-}
-
-.rank {
-    width: 34px;
-    height: 34px;
-    border-radius: 10px;
-    display: grid;
-    place-items: center;
-    background: rgba(255,255,255,.06);
-    font-weight: 900;
-}
-
-.rank.gold {
-    background: rgba(255,200,87,.17);
-    color: var(--yellow);
-}
-
-.rank.silver {
-    background: rgba(203,213,225,.14);
-    color: #cbd5e1;
-}
-
-.rank.bronze {
-    background: rgba(180,83,9,.16);
-    color: #fb923c;
-}
-
-.user-name {
-    font-weight: 800;
-}
-
-.user-title {
-    color: var(--muted);
-    font-size: 11px;
-    margin-top: 3px;
-}
-
-.user-points {
-    color: var(--yellow);
-    font-weight: 900;
-}
-
-.level-card {
-    background:
-        linear-gradient(145deg, rgba(91,140,255,.15), rgba(168,85,247,.1)),
-        var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 25px;
-}
-
-.level-card .big-icon {
-    font-size: 42px;
-}
-
-.level-card h3 {
-    margin-top: 15px;
-}
-
-.level-card p {
-    color: var(--muted);
-    font-size: 12px;
-    line-height: 1.6;
-    margin-top: 7px;
-}
-
-.progress {
-    height: 9px;
-    background: rgba(255,255,255,.07);
-    border-radius: 999px;
-    margin-top: 18px;
-    overflow: hidden;
-}
-
-.progress-bar {
-    height: 100%;
-    width: 0;
-    background: linear-gradient(90deg, var(--blue), var(--purple));
-    border-radius: inherit;
-    transition: width .5s ease;
-}
-
-.level-bottom {
-    display: flex;
-    justify-content: space-between;
-    color: var(--muted);
-    font-size: 10px;
-    margin-top: 7px;
-}
-
-/* =========================================================
-   REPORT FORM
-========================================================= */
+/* REPORT */
 
 .report-section {
-    margin-top: 60px;
+    margin-top:60px;
 }
 
 .report-layout {
-    display: grid;
-    grid-template-columns: .7fr 1.3fr;
-    gap: 20px;
+    display:grid;
+    grid-template-columns:.7fr 1.3fr;
+    gap:20px;
+}
+
+.report-intro,
+.report-form {
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:25px;
 }
 
 .report-intro {
     background:
-        linear-gradient(145deg, rgba(255,200,87,.12), rgba(255,82,99,.07)),
+        linear-gradient(145deg,rgba(255,200,87,.12),rgba(255,82,99,.07)),
         var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 30px;
 }
 
 .report-intro .icon {
-    font-size: 45px;
+    font-size:45px;
 }
 
 .report-intro h2 {
-    margin-top: 18px;
-    font-size: 28px;
+    margin-top:18px;
 }
 
 .report-intro p {
-    color: var(--muted);
-    line-height: 1.7;
-    font-size: 13px;
-    margin-top: 10px;
+    color:var(--muted);
+    line-height:1.7;
+    font-size:13px;
+    margin-top:10px;
 }
 
 .reward-box {
-    margin-top: 22px;
-    padding: 15px;
-    border-radius: 13px;
-    background: rgba(255,200,87,.07);
-    border: 1px solid rgba(255,200,87,.15);
+    margin-top:22px;
+    padding:15px;
+    border-radius:13px;
+    background:rgba(255,200,87,.07);
 }
 
 .reward-box strong {
-    color: var(--yellow);
-}
-
-.report-form {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 25px;
+    color:var(--yellow);
 }
 
 .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
 }
 
 .form-group.full {
-    grid-column: 1/-1;
+    grid-column:1/-1;
 }
 
 .form-group label {
-    display: block;
-    font-size: 12px;
-    font-weight: 800;
-    margin-bottom: 7px;
-    color: #e2e8f0;
+    display:block;
+    font-size:12px;
+    font-weight:800;
+    margin-bottom:7px;
 }
 
 textarea {
-    min-height: 120px;
-    resize: vertical;
-}
-
-.form-note {
-    color: var(--muted);
-    font-size: 10px;
-    margin-top: 12px;
-    line-height: 1.5;
+    min-height:120px;
+    resize:vertical;
 }
 
 .submit-btn {
-    width: 100%;
-    margin-top: 18px;
-    padding: 14px;
-    border: none;
-    border-radius: 11px;
-    background: linear-gradient(135deg, var(--yellow), var(--orange));
-    color: #111827;
-    font-weight: 900;
-    cursor: pointer;
-    transition: .2s;
+    width:100%;
+    margin-top:18px;
+    padding:14px;
+    border:none;
+    border-radius:11px;
+    background:linear-gradient(135deg,var(--yellow),var(--orange));
+    color:#111827;
+    font-weight:900;
 }
 
-.submit-btn:hover {
-    transform: translateY(-2px);
+/* CHAT */
+
+.chat-section {
+    margin-top:60px;
 }
 
-/* =========================================================
-   COMMUNITY HELP
-========================================================= */
-
-.help-section {
-    margin-top: 60px;
+.chat-layout {
+    display:grid;
+    grid-template-columns:330px 1fr;
+    min-height:550px;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:20px;
+    overflow:hidden;
 }
 
-.help-grid {
-    display: grid;
-    grid-template-columns: repeat(3,1fr);
-    gap: 15px;
+.conversations {
+    border-right:1px solid var(--border);
+    background:rgba(0,0,0,.12);
 }
 
-.help-card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 22px;
+.conversations-header {
+    padding:18px;
+    border-bottom:1px solid var(--border);
 }
 
-.help-card .help-icon {
-    font-size: 30px;
+.conversations-header h3 {
+    font-size:16px;
 }
 
-.help-card h3 {
-    margin-top: 12px;
+.conversation {
+    padding:15px;
+    display:flex;
+    gap:12px;
+    align-items:center;
+    border-bottom:1px solid var(--border);
+    cursor:pointer;
 }
 
-.help-card p {
-    color: var(--muted);
-    font-size: 12px;
-    line-height: 1.6;
-    margin-top: 7px;
+.conversation:hover,
+.conversation.active {
+    background:rgba(255,200,87,.08);
 }
 
-.help-card a {
-    display: inline-block;
-    margin-top: 15px;
-    color: var(--yellow);
-    text-decoration: none;
-    font-weight: 800;
-    font-size: 12px;
+.avatar {
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    background:linear-gradient(135deg,var(--yellow),var(--orange));
+    color:#111827;
+    font-weight:900;
 }
 
-/* =========================================================
-   FOOTER
-========================================================= */
-
-footer {
-    border-top: 1px solid var(--border);
-    margin-top: 30px;
+.conversation-info {
+    min-width:0;
 }
 
-.footer-inner {
-    max-width: 1250px;
-    margin: auto;
-    padding: 25px 22px;
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    color: var(--muted);
-    font-size: 11px;
+.conversation-info strong {
+    display:block;
+    font-size:13px;
 }
 
-.footer-inner strong {
-    color: var(--yellow);
+.conversation-info small {
+    color:var(--muted);
+    display:block;
+    margin-top:4px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 
-/* =========================================================
-   TOAST
-========================================================= */
-
-.toast {
-    position: fixed;
-    bottom: 25px;
-    right: 25px;
-    z-index: 3000;
-    background: #111827;
-    border: 1px solid rgba(56,232,161,.3);
-    box-shadow: 0 20px 50px rgba(0,0,0,.4);
-    border-radius: 14px;
-    padding: 15px 18px;
-    transform: translateY(130px);
-    opacity: 0;
-    transition: .3s;
-    max-width: 350px;
-    pointer-events: none;
+.chat-window {
+    display:flex;
+    flex-direction:column;
+    min-width:0;
 }
 
-.toast.show {
-    transform: translateY(0);
-    opacity: 1;
+.chat-header {
+    padding:18px;
+    border-bottom:1px solid var(--border);
 }
 
-.toast strong {
-    color: var(--green);
+.chat-header strong {
+    font-size:15px;
 }
 
-/* =========================================================
-   MODAL
-========================================================= */
-
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,.72);
-    backdrop-filter: blur(8px);
-    z-index: 4000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
+.chat-header small {
+    display:block;
+    color:var(--muted);
+    margin-top:3px;
 }
 
-.modal-overlay.show {
-    display: flex;
+.messages {
+    flex:1;
+    padding:20px;
+    overflow-y:auto;
+    min-height:350px;
+    max-height:420px;
 }
+
+.message {
+    display:flex;
+    margin-bottom:12px;
+}
+
+.message.mine {
+    justify-content:flex-end;
+}
+
+.message-bubble {
+    max-width:70%;
+    padding:10px 13px;
+    border-radius:15px;
+    background:#1a2238;
+    color:#e2e8f0;
+    font-size:13px;
+    line-height:1.5;
+}
+
+.message.mine .message-bubble {
+    background:linear-gradient(135deg,#ffbf45,#ff7745);
+    color:#111827;
+}
+
+.message-time {
+    display:block;
+    font-size:9px;
+    opacity:.6;
+    margin-top:4px;
+}
+
+.chat-form {
+    display:flex;
+    gap:10px;
+    padding:15px;
+    border-top:1px solid var(--border);
+}
+
+.chat-form input {
+    flex:1;
+}
+
+.chat-send {
+    border:none;
+    border-radius:11px;
+    padding:0 18px;
+    background:var(--yellow);
+    color:#111827;
+    font-weight:900;
+}
+
+.no-chat {
+    height:100%;
+    display:grid;
+    place-items:center;
+    text-align:center;
+    color:var(--muted);
+    padding:30px;
+}
+
+/* AUTH MODAL */
 
 .modal {
-    width: min(600px, 100%);
-    max-height: 90vh;
-    overflow-y: auto;
-    background: #111827;
-    border: 1px solid var(--border);
-    border-radius: 22px;
-    box-shadow: 0 30px 100px rgba(0,0,0,.6);
+    position:fixed;
+    inset:0;
+    z-index:3000;
+    background:rgba(0,0,0,.7);
+    backdrop-filter:blur(10px);
+    display:none;
+    place-items:center;
+    padding:20px;
+}
+
+.modal.show {
+    display:grid;
+}
+
+.modal-card {
+    width:min(430px,100%);
+    background:#111827;
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:25px;
+    box-shadow:0 30px 80px rgba(0,0,0,.5);
 }
 
 .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 22px;
-    border-bottom: 1px solid var(--border);
-}
-
-.modal-header h3 {
-    font-size: 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
 }
 
 .close-modal {
-    width: 35px;
-    height: 35px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: rgba(255,255,255,.05);
-    color: white;
-    font-size: 18px;
+    border:none;
+    background:transparent;
+    color:var(--muted);
+    font-size:24px;
 }
 
-.modal-body {
-    padding: 22px;
+.auth-tabs {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:5px;
+    background:#0d1221;
+    padding:4px;
+    border-radius:10px;
+    margin-bottom:20px;
 }
 
-.modal-image {
-    width: 100%;
-    max-height: 330px;
-    object-fit: cover;
-    border-radius: 15px;
-    margin-bottom: 18px;
+.auth-tab {
+    border:none;
+    background:transparent;
+    color:var(--muted);
+    padding:10px;
+    border-radius:8px;
 }
 
-.modal-status {
-    display: inline-block;
-    padding: 7px 10px;
-    border-radius: 999px;
-    font-size: 11px;
-    font-weight: 900;
-    margin-bottom: 10px;
+.auth-tab.active {
+    background:#1d263b;
+    color:white;
 }
 
-.modal-body h2 {
-    margin-bottom: 5px;
+.auth-form {
+    display:none;
 }
 
-.modal-muted {
-    color: var(--muted);
-    font-size: 13px;
+.auth-form.active {
+    display:block;
 }
 
-.modal-description {
-    color: #cbd5e1;
-    line-height: 1.7;
-    margin-top: 15px;
-    font-size: 13px;
+.auth-form label {
+    display:block;
+    font-size:12px;
+    font-weight:800;
+    margin:12px 0 6px;
 }
 
-.modal-actions {
-    display: grid;
-    grid-template-columns: repeat(2,1fr);
-    gap: 9px;
-    margin-top: 20px;
+.auth-submit {
+    width:100%;
+    margin-top:18px;
+    padding:13px;
+    border:none;
+    border-radius:11px;
+    background:linear-gradient(135deg,var(--yellow),var(--orange));
+    font-weight:900;
 }
 
-.modal-actions button,
-.modal-actions a {
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: rgba(255,255,255,.05);
-    color: white;
-    text-decoration: none;
-    text-align: center;
-    font-weight: 800;
-    font-size: 12px;
+.auth-message {
+    margin-top:12px;
+    font-size:12px;
+    color:var(--muted);
 }
 
-/* =========================================================
-   RESPONSIVE
-========================================================= */
+/* TOAST */
 
-@media(max-width: 1000px) {
+.toast {
+    position:fixed;
+    bottom:25px;
+    right:25px;
+    z-index:5000;
+    background:#111827;
+    border:1px solid rgba(56,232,161,.3);
+    box-shadow:0 20px 50px rgba(0,0,0,.4);
+    border-radius:14px;
+    padding:15px 18px;
+    transform:translateY(130px);
+    opacity:0;
+    transition:.3s;
+    max-width:350px;
+}
 
+.toast.show {
+    transform:translateY(0);
+    opacity:1;
+}
+
+.toast strong {
+    color:var(--green);
+}
+
+/* EMPTY */
+
+.empty {
+    grid-column:1/-1;
+    padding:60px 20px;
+    text-align:center;
+    background:var(--panel);
+    border:1px dashed var(--border);
+    border-radius:20px;
+    color:var(--muted);
+}
+
+/* FOOTER */
+
+footer {
+    border-top:1px solid var(--border);
+}
+
+.footer-inner {
+    max-width:1250px;
+    margin:auto;
+    padding:25px 22px;
+    display:flex;
+    justify-content:space-between;
+    color:var(--muted);
+    font-size:11px;
+}
+
+.footer-inner strong {
+    color:var(--yellow);
+}
+
+/* RESPONSIVE */
+
+@media(max-width:950px) {
     .hero {
-        grid-template-columns: 1fr;
-    }
-
-    .bounty-preview {
-        max-width: 500px;
-        width: 100%;
-        margin: auto;
+        grid-template-columns:1fr;
     }
 
     .pet-grid {
-        grid-template-columns: repeat(2,1fr);
+        grid-template-columns:repeat(2,1fr);
     }
 
     .stats-grid {
-        grid-template-columns: repeat(2,1fr);
-    }
-
-    .leaderboard-layout {
-        grid-template-columns: 1fr;
+        grid-template-columns:repeat(2,1fr);
     }
 
     .report-layout {
-        grid-template-columns: 1fr;
-    }
-
-    .filter-row {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .filter-row .reset-btn {
-        width: 100%;
-    }
-
-    .help-grid {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns:1fr;
     }
 }
 
-@media(max-width: 650px) {
-
+@media(max-width:700px) {
     .navbar {
-        padding: 12px 16px;
+        padding:12px 16px;
     }
 
     .nav-links {
-        display: none;
+        display:none;
     }
 
     .points-pill {
-        font-size: 11px;
-        padding: 8px 10px;
+        display:none;
     }
 
     .hero {
-        padding-top: 45px;
+        padding-top:45px;
     }
 
     .hero h2 {
-        font-size: 48px;
-        letter-spacing: -2.5px;
+        font-size:48px;
+        letter-spacing:-2.5px;
     }
 
     .container {
-        padding-left: 16px;
-        padding-right: 16px;
+        padding-left:16px;
+        padding-right:16px;
     }
 
-    .stats-grid {
-        grid-template-columns: 1fr 1fr;
+    .stats-grid,
+    .pet-grid {
+        grid-template-columns:1fr;
     }
 
     .filter-row {
-        grid-template-columns: 1fr;
-    }
-
-    .pet-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns:1fr;
     }
 
     .form-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns:1fr;
     }
 
     .form-group.full {
-        grid-column: auto;
+        grid-column:auto;
     }
 
-    .help-grid {
-        grid-template-columns: 1fr;
+    .chat-layout {
+        grid-template-columns:1fr;
+    }
+
+    .conversations {
+        border-right:none;
+        border-bottom:1px solid var(--border);
+        max-height:220px;
+        overflow-y:auto;
     }
 
     .footer-inner {
-        flex-direction: column;
-    }
-
-    .modal-actions {
-        grid-template-columns: 1fr;
-    }
-
-    .leader-row {
-        grid-template-columns: 40px 1fr auto;
-        gap: 10px;
-        padding: 14px;
-    }
-
-    .user-points {
-        font-size: 11px;
+        flex-direction:column;
     }
 }
-
 </style>
 </head>
 
 <body>
 
-<!-- ======================================================
-     NAVIGATION
-====================================================== -->
-
 <header>
+<nav class="navbar">
 
-    <nav class="navbar">
+    <div class="logo">
+        <div class="logo-icon">🐾</div>
 
-        <div class="logo">
+        <div class="logo-text">
+            <h1>Santa Cruz <span>Pet Watch</span></h1>
+            <small>Community Lost & Found Network</small>
+        </div>
+    </div>
 
-            <div class="logo-icon">🐾</div>
+    <div class="nav-links">
+        <a href="#reports">Reports</a>
+        <a href="#chat">Messages</a>
+        <a href="#report">Report Pet</a>
+    </div>
 
-            <div class="logo-text">
-
-                <h1>
-                    Santa Cruz
-                    <span>Pet Watch</span>
-                </h1>
-
-                <small>
-                    Lost & Found Pet Network
-                </small>
-
-            </div>
-
+    <div class="user-area">
+        <div class="points-pill" id="pointsPill">
+            ⭐ 0 Paw Points
         </div>
 
-        <div class="nav-links">
+        <button class="auth-btn" id="authButton">
+            Login
+        </button>
+    </div>
 
-            <a href="#reports">Reports</a>
-            <a href="#leaderboard">Leaderboard</a>
-            <a href="#report">Report Pet</a>
-            <a href="#help">Help</a>
-
-        </div>
-
-        <div class="points-pill">
-            ⭐ <span id="pointsDisplay">1,250</span> Paw Points
-        </div>
-
-    </nav>
-
+</nav>
 </header>
 
 
-<!-- ======================================================
-     HERO
-====================================================== -->
-
 <section class="hero">
 
-    <div class="hero-content">
+    <div>
 
         <div class="eyebrow">
             <span class="live-dot"></span>
-            SANTA CRUZ DE LA SIERRA • COMMUNITY BOARD
+            SANTA CRUZ COMMUNITY • LIVE BOARD
         </div>
 
         <h2>
@@ -1334,86 +1083,53 @@ footer {
         </h2>
 
         <p>
-            Report a lost or found pet, search community reports,
-            contact owners, share sightings, and help reunite pets
-            with their families.
+            Santa Cruz Pet Watch connects people searching for
+            lost pets with neighbors who can help. Find a report,
+            contact the person privately, and help bring pets home.
         </p>
 
         <div class="hero-buttons">
-
-            <a
-                href="#reports"
-                class="btn btn-primary"
-            >
+            <a href="#reports" class="btn btn-primary">
                 🔎 Search Pet Reports
             </a>
 
-            <a
-                href="#report"
-                class="btn btn-secondary"
-            >
+            <a href="#report" class="btn btn-secondary">
                 🐾 Report a Pet
             </a>
 
+            <a href="#chat" class="btn btn-secondary">
+                💬 My Messages
+            </a>
         </div>
 
     </div>
 
 
-    <div class="bounty-preview">
+    <div class="bounty-card">
 
-        <div class="bounty-card">
+        <div class="bounty-top">
+            <span class="bounty-label">⚡ ACTIVE BOUNTY</span>
+            <span class="reward">+150 PTS</span>
+        </div>
 
-            <div class="bounty-top">
+        <div class="preview-icon">
+            🐕
+        </div>
 
-                <span class="bounty-label">
-                    ⚡ COMMUNITY BOUNTY
-                </span>
+        <h3>Rumba</h3>
 
-                <span class="reward">
-                    +150 PTS
-                </span>
+        <p>Dachshund • Urubó</p>
 
+        <div class="mini-stats">
+
+            <div class="mini-stat">
+                <small>Status</small>
+                <strong style="color:#ff5263">● LOST</strong>
             </div>
 
-            <div class="preview-icon">
-                🐕
-            </div>
-
-            <h3>
-                Rumba
-            </h3>
-
-            <p>
-                Dachshund • Urubó
-            </p>
-
-            <div class="mini-stats">
-
-                <div class="mini-stat">
-
-                    <small>
-                        Status
-                    </small>
-
-                    <strong style="color:#ff5263">
-                        ● LOST
-                    </strong>
-
-                </div>
-
-                <div class="mini-stat">
-
-                    <small>
-                        Reported
-                    </small>
-
-                    <strong>
-                        Aug 08, 2026
-                    </strong>
-
-                </div>
-
+            <div class="mini-stat">
+                <small>Posted</small>
+                <strong>Aug 08</strong>
             </div>
 
         </div>
@@ -1426,121 +1142,37 @@ footer {
 <main class="container">
 
 
-<!-- ======================================================
-     STATS
-====================================================== -->
-
 <section>
 
     <div class="section-heading">
-
-        <div>
-
-            <h2>
-                Community Mission Control
-            </h2>
-
-            <p>
-                Every report gives the community another chance
-                to bring a pet home.
-            </p>
-
-        </div>
-
+        <h2>Community Mission Control</h2>
+        <p>Every report increases the chance of bringing a pet home.</p>
     </div>
-
 
     <div class="stats-grid">
 
-        <div
-            class="stat-card"
-            style="--accent:#ff5263"
-        >
-
-            <div class="stat-icon">
-                🚨
-            </div>
-
-            <div
-                class="stat-number"
-                id="lostCount"
-            >
-                0
-            </div>
-
-            <div class="stat-label">
-                Active Lost Reports
-            </div>
-
+        <div class="stat-card">
+            <div class="stat-icon">🚨</div>
+            <div class="stat-number" id="lostCount">0</div>
+            <div class="stat-label">Active Lost Reports</div>
         </div>
 
-
-        <div
-            class="stat-card"
-            style="--accent:#38e8a1"
-        >
-
-            <div class="stat-icon">
-                🏠
-            </div>
-
-            <div
-                class="stat-number"
-                id="foundCount"
-            >
-                0
-            </div>
-
-            <div class="stat-label">
-                Found Pets
-            </div>
-
+        <div class="stat-card">
+            <div class="stat-icon">🏠</div>
+            <div class="stat-number" id="foundCount">0</div>
+            <div class="stat-label">Found Pets</div>
         </div>
 
-
-        <div
-            class="stat-card"
-            style="--accent:#ffc857"
-        >
-
-            <div class="stat-icon">
-                ⭐
-            </div>
-
-            <div
-                class="stat-number"
-                id="pointsEarned"
-            >
-                2,450
-            </div>
-
-            <div class="stat-label">
-                Paw Points Earned
-            </div>
-
+        <div class="stat-card">
+            <div class="stat-icon">⭐</div>
+            <div class="stat-number" id="totalPoints">0</div>
+            <div class="stat-label">Paw Points Earned</div>
         </div>
 
-
-        <div
-            class="stat-card"
-            style="--accent:#5b8cff"
-        >
-
-            <div class="stat-icon">
-                🤝
-            </div>
-
-            <div
-                class="stat-number"
-                id="communityHeroes"
-            >
-                128
-            </div>
-
-            <div class="stat-label">
-                Community Heroes
-            </div>
-
+        <div class="stat-card">
+            <div class="stat-icon">🤝</div>
+            <div class="stat-number" id="heroCount">0</div>
+            <div class="stat-label">Community Heroes</div>
         </div>
 
     </div>
@@ -1548,387 +1180,109 @@ footer {
 </section>
 
 
-<!-- ======================================================
-     REPORTS
-====================================================== -->
-
 <section id="reports">
 
     <div class="section-heading">
-
-        <div>
-
-            <h2>
-                🐾 Pet Reports
-            </h2>
-
-            <p>
-                Search lost and found pet reports in
-                Santa Cruz de la Sierra.
-            </p>
-
-        </div>
-
+        <h2>🐾 Active Pet Bounties</h2>
+        <p>Browse the latest lost and found reports around Santa Cruz.</p>
     </div>
-
 
     <div class="filter-box">
 
         <div class="filter-row">
 
-
             <div class="filter-group">
-
-                <label for="searchFilter">
-                    Search
-                </label>
-
-                <input
-                    type="search"
-                    id="searchFilter"
-                    placeholder="Search by name, breed, area..."
-                >
-
-            </div>
-
-
-            <div class="filter-group">
-
-                <label for="statusFilter">
-                    Status
-                </label>
+                <label>Status</label>
 
                 <select id="statusFilter">
-
-                    <option value="All">
-                        All Reports
-                    </option>
-
-                    <option value="Lost">
-                        🔴 Lost
-                    </option>
-
-                    <option value="Found">
-                        🟢 Found
-                    </option>
-
-                    <option value="Reunited">
-                        🔵 Reunited
-                    </option>
-
+                    <option value="All">All Reports</option>
+                    <option value="Lost">🔴 Lost</option>
+                    <option value="Found">🟢 Found</option>
                 </select>
-
             </div>
-
 
             <div class="filter-group">
-
-                <label for="areaFilter">
-                    Neighborhood
-                </label>
+                <label>Neighborhood</label>
 
                 <select id="areaFilter">
-
-                    <option value="All">
-                        All Areas
-                    </option>
-
-                    <option value="Equipetrol">
-                        Equipetrol
-                    </option>
-
-                    <option value="Urubó">
-                        Urubó
-                    </option>
-
-                    <option value="Sirari">
-                        Sirari
-                    </option>
-
-                    <option value="Plan 3000">
-                        Plan 3000
-                    </option>
-
-                    <option value="Other">
-                        Other
-                    </option>
-
+                    <option value="All">All Areas</option>
+                    <option value="Equipetrol">Equipetrol</option>
+                    <option value="Urubo">Urubó</option>
+                    <option value="Sirari">Sirari</option>
+                    <option value="Plan 3000">Plan 3000</option>
                 </select>
-
             </div>
 
-
-            <button
-                class="reset-btn"
-                id="resetFilters"
-                type="button"
-            >
+            <button class="reset-btn" id="resetFilters">
                 ↻ Reset
             </button>
 
         </div>
 
-
-        <div
-            class="filter-row"
-            style="margin-top:12px; grid-template-columns:1fr 1fr auto auto;"
-        >
-
-            <div class="filter-group">
-
-                <label for="sortFilter">
-                    Sort
-                </label>
-
-                <select id="sortFilter">
-
-                    <option value="newest">
-                        Newest first
-                    </option>
-
-                    <option value="oldest">
-                        Oldest first
-                    </option>
-
-                    <option value="points">
-                        Highest reward
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <div class="filter-group">
-
-                <label for="mineFilter">
-                    My Reports
-                </label>
-
-                <select id="mineFilter">
-
-                    <option value="all">
-                        All Reports
-                    </option>
-
-                    <option value="mine">
-                        Only My Reports
-                    </option>
-
-                </select>
-
-            </div>
-
-            <div></div>
-            <div></div>
-
-        </div>
-
     </div>
 
-
-    <div
-        class="pet-grid"
-        id="petGrid"
-    >
-        <!-- JavaScript inserts reports -->
-    </div>
+    <div class="pet-grid" id="petGrid"></div>
 
 </section>
 
 
-<!-- ======================================================
-     LEADERBOARD
-====================================================== -->
+<!-- CHAT -->
 
-<section
-    class="leaderboard-section"
-    id="leaderboard"
->
+<section class="chat-section" id="chat">
 
     <div class="section-heading">
-
-        <div>
-
-            <h2>
-                🏆 Paw Point Champions
-            </h2>
-
-            <p>
-                Helping neighbors and pets makes you a hero.
-            </p>
-
-        </div>
-
+        <h2>💬 Private Messages</h2>
+        <p>Talk privately with people connected to pet reports.</p>
     </div>
 
+    <div class="chat-layout">
 
-    <div class="leaderboard-layout">
+        <div class="conversations">
 
-        <div class="leaderboard">
-
-            <div class="leader-row">
-
-                <div class="rank gold">
-                    1
-                </div>
-
-                <div>
-
-                    <div class="user-name">
-                        🐕 Diego R.
-                    </div>
-
-                    <div class="user-title">
-                        Ultimate Pet Hero
-                    </div>
-
-                </div>
-
-                <div class="user-points">
-                    1,850 ⭐
-                </div>
-
+            <div class="conversations-header">
+                <h3>Conversations</h3>
             </div>
 
-
-            <div class="leader-row">
-
-                <div class="rank silver">
-                    2
+            <div id="conversationList">
+                <div class="empty">
+                    Login to see your conversations.
                 </div>
-
-                <div>
-
-                    <div class="user-name">
-                        🐾 Camila M.
-                    </div>
-
-                    <div class="user-title">
-                        Neighborhood Guardian
-                    </div>
-
-                </div>
-
-                <div class="user-points">
-                    1,420 ⭐
-                </div>
-
-            </div>
-
-
-            <div class="leader-row">
-
-                <div class="rank bronze">
-                    3
-                </div>
-
-                <div>
-
-                    <div class="user-name">
-                        🦴 Mateo S.
-                    </div>
-
-                    <div class="user-title">
-                        Pet Tracker
-                    </div>
-
-                </div>
-
-                <div class="user-points">
-                    1,180 ⭐
-                </div>
-
-            </div>
-
-
-            <div class="leader-row">
-
-                <div class="rank">
-                    4
-                </div>
-
-                <div>
-
-                    <div class="user-name">
-                        🐈 Sofia V.
-                    </div>
-
-                    <div class="user-title">
-                        Community Scout
-                    </div>
-
-                </div>
-
-                <div class="user-points">
-                    920 ⭐
-                </div>
-
-            </div>
-
-
-            <div class="leader-row">
-
-                <div class="rank">
-                    5
-                </div>
-
-                <div>
-
-                    <div class="user-name">
-                        🐕 Lucas A.
-                    </div>
-
-                    <div class="user-title">
-                        Helpful Neighbor
-                    </div>
-
-                </div>
-
-                <div class="user-points">
-                    760 ⭐
-                </div>
-
             </div>
 
         </div>
 
+        <div class="chat-window">
 
-        <div class="level-card">
-
-            <div class="big-icon">
-                🏅
+            <div class="chat-header" id="chatHeader">
+                <strong>No conversation selected</strong>
+                <small>Select a conversation to start messaging.</small>
             </div>
 
-            <h3>
-                Your Hero Level
-            </h3>
+            <div class="messages" id="messages">
 
-            <p>
-                Help identify, share, locate, or reunite pets
-                to earn Paw Points.
-            </p>
-
-            <div class="progress">
-
-                <div
-                    class="progress-bar"
-                    id="progressBar"
-                ></div>
+                <div class="no-chat">
+                    <div>
+                        <div style="font-size:45px">💬</div>
+                        <p>Choose a conversation.</p>
+                    </div>
+                </div>
 
             </div>
 
-            <div class="level-bottom">
+            <form class="chat-form" id="chatForm">
 
-                <span id="levelText">
-                    Level 4
-                </span>
+                <input
+                    id="messageInput"
+                    type="text"
+                    placeholder="Write a private message..."
+                    autocomplete="off"
+                >
 
-                <span id="levelPoints">
-                    1,250 / 1,500
-                </span>
+                <button class="chat-send" type="submit">
+                    Send
+                </button>
 
-            </div>
+            </form>
 
         </div>
 
@@ -1937,60 +1291,36 @@ footer {
 </section>
 
 
-<!-- ======================================================
-     REPORT FORM
-====================================================== -->
+<!-- REPORT -->
 
-<section
-    class="report-section"
-    id="report"
->
+<section class="report-section" id="report">
 
     <div class="section-heading">
-
-        <div>
-
-            <h2>
-                📢 Create a Pet Report
-            </h2>
-
-            <p>
-                Your report will be saved on this device.
-            </p>
-
-        </div>
-
+        <h2>📢 Create a Pet Report</h2>
+        <p>Help the community get another pet home.</p>
     </div>
-
 
     <div class="report-layout">
 
-
         <div class="report-intro">
 
-            <div class="icon">
-                🐾
-            </div>
+            <div class="icon">🐾</div>
 
-            <h2>
-                Put out the call.
-            </h2>
+            <h2>Put out the call.</h2>
 
             <p>
-                Lost a pet or found one? Create a report and
-                let neighbors know where help is needed.
+                Whether you've lost your pet or found one,
+                create a report and allow other community members
+                to contact you privately.
             </p>
 
             <div class="reward-box">
 
-                <strong>
-                    ⭐ Paw Points
-                </strong>
+                <strong>⭐ Paw Points</strong>
 
                 <p>
-                    Lost reports receive a higher suggested
-                    reward because they usually need urgent
-                    community attention.
+                    Lost reports receive 150 points and found
+                    reports receive 125 points.
                 </p>
 
             </div>
@@ -1998,37 +1328,18 @@ footer {
         </div>
 
 
-        <form
-            class="report-form"
-            id="reportForm"
-        >
+        <form class="report-form" id="reportForm">
 
             <div class="form-grid">
 
-
                 <div class="form-group">
 
-                    <label for="reportStatus">
-                        Status *
-                    </label>
+                    <label>Status *</label>
 
-                    <select
-                        id="reportStatus"
-                        required
-                    >
-
-                        <option value="">
-                            Select status
-                        </option>
-
-                        <option value="Lost">
-                            Lost
-                        </option>
-
-                        <option value="Found">
-                            Found
-                        </option>
-
+                    <select id="reportStatus" required>
+                        <option value="">Select status</option>
+                        <option value="Lost">Lost</option>
+                        <option value="Found">Found</option>
                     </select>
 
                 </div>
@@ -2036,15 +1347,12 @@ footer {
 
                 <div class="form-group">
 
-                    <label for="petName">
-                        Pet Name *
-                    </label>
+                    <label>Pet Name *</label>
 
                     <input
-                        type="text"
                         id="petName"
+                        type="text"
                         placeholder="e.g. Max"
-                        maxlength="40"
                         required
                     >
 
@@ -2053,31 +1361,15 @@ footer {
 
                 <div class="form-group">
 
-                    <label for="species">
-                        Species *
-                    </label>
+                    <label>Species *</label>
 
-                    <select
-                        id="species"
-                        required
-                    >
-
-                        <option value="">
-                            Select species
-                        </option>
-
-                        <option value="Dog">
-                            🐕 Dog
-                        </option>
-
-                        <option value="Cat">
-                            🐈 Cat
-                        </option>
-
-                        <option value="Other">
-                            🐾 Other
-                        </option>
-
+                    <select id="petSpecies" required>
+                        <option value="">Select species</option>
+                        <option>Dog</option>
+                        <option>Cat</option>
+                        <option>Bird</option>
+                        <option>Rabbit</option>
+                        <option>Other</option>
                     </select>
 
                 </div>
@@ -2085,15 +1377,13 @@ footer {
 
                 <div class="form-group">
 
-                    <label for="breed">
-                        Breed / Description
-                    </label>
+                    <label>Breed *</label>
 
                     <input
+                        id="petBreed"
                         type="text"
-                        id="breed"
                         placeholder="e.g. Golden Retriever"
-                        maxlength="60"
+                        required
                     >
 
                 </div>
@@ -2101,39 +1391,14 @@ footer {
 
                 <div class="form-group">
 
-                    <label for="area">
-                        Area *
-                    </label>
+                    <label>Area *</label>
 
-                    <select
-                        id="area"
-                        required
-                    >
-
-                        <option value="">
-                            Select area
-                        </option>
-
-                        <option value="Equipetrol">
-                            Equipetrol
-                        </option>
-
-                        <option value="Urubó">
-                            Urubó
-                        </option>
-
-                        <option value="Sirari">
-                            Sirari
-                        </option>
-
-                        <option value="Plan 3000">
-                            Plan 3000
-                        </option>
-
-                        <option value="Other">
-                            Other
-                        </option>
-
+                    <select id="area" required>
+                        <option value="">Select neighborhood</option>
+                        <option value="Equipetrol">Equipetrol</option>
+                        <option value="Urubo">Urubó</option>
+                        <option value="Sirari">Sirari</option>
+                        <option value="Plan 3000">Plan 3000</option>
                     </select>
 
                 </div>
@@ -2141,15 +1406,12 @@ footer {
 
                 <div class="form-group">
 
-                    <label for="contact">
-                        Contact Info *
-                    </label>
+                    <label>Image URL *</label>
 
                     <input
-                        type="text"
-                        id="contact"
-                        placeholder="Phone or email"
-                        maxlength="100"
+                        id="imageUrl"
+                        type="url"
+                        placeholder="https://..."
                         required
                     >
 
@@ -2158,29 +1420,11 @@ footer {
 
                 <div class="form-group full">
 
-                    <label for="imageUrl">
-                        Image URL
-                    </label>
-
-                    <input
-                        type="url"
-                        id="imageUrl"
-                        placeholder="https://example.com/pet.jpg"
-                    >
-
-                </div>
-
-
-                <div class="form-group full">
-
-                    <label for="description">
-                        Description *
-                    </label>
+                    <label>Description *</label>
 
                     <textarea
                         id="description"
-                        placeholder="Describe the pet, markings, collar, where it was last seen/found, etc."
-                        maxlength="600"
+                        placeholder="Describe the pet, markings, collar, where it was last seen..."
                         required
                     ></textarea>
 
@@ -2188,20 +1432,7 @@ footer {
 
             </div>
 
-
-            <div class="form-note">
-
-                Reports are stored locally in this browser.
-                A real multi-user version would need a database
-                such as Firebase or Supabase.
-
-            </div>
-
-
-            <button
-                class="submit-btn"
-                type="submit"
-            >
+            <button class="submit-btn" type="submit">
                 🐾 Publish Pet Report
             </button>
 
@@ -2211,133 +1442,20 @@ footer {
 
 </section>
 
-
-<!-- ======================================================
-     OFFICIAL / COMMUNITY HELP
-====================================================== -->
-
-<section
-    class="help-section"
-    id="help"
->
-
-    <div class="section-heading">
-
-        <div>
-
-            <h2>
-                🆘 Need Extra Help?
-            </h2>
-
-            <p>
-                Official municipal resources for Santa Cruz de la Sierra.
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div class="help-grid">
-
-
-        <div class="help-card">
-
-            <div class="help-icon">
-                🏛️
-            </div>
-
-            <h3>
-                Municipal Call Center
-            </h3>
-
-            <p>
-                The Santa Cruz de la Sierra municipal government
-                lists 800 12 5700 as its municipal call center.
-            </p>
-
-            <a href="tel:800125700">
-                📞 Call 800 12 5700
-            </a>
-
-        </div>
-
-
-        <div class="help-card">
-
-            <div class="help-icon">
-                🐕
-            </div>
-
-            <h3>
-                CEMZOOCRUZ
-            </h3>
-
-            <p>
-                The municipal phone directory lists the
-                Centro de Albergue Temporal para Canes y Felinos
-                as CEMZOOCRUZ.
-            </p>
-
-            <a href="tel:3475779">
-                📞 Call 3475779
-            </a>
-
-        </div>
-
-
-        <div class="help-card">
-
-            <div class="help-icon">
-                🚨
-            </div>
-
-            <h3>
-                Animal Emergency
-            </h3>
-
-            <p>
-                If an animal is injured or in immediate danger,
-                avoid putting yourself at risk and contact
-                appropriate emergency or municipal services.
-            </p>
-
-            <a href="tel:800125050">
-                📞 Municipal Emergency
-            </a>
-
-        </div>
-
-    </div>
-
-</section>
-
-
 </main>
 
-
-<!-- ======================================================
-     FOOTER
-====================================================== -->
 
 <footer>
 
     <div class="footer-inner">
 
         <div>
-
-            <strong>
-                Santa Cruz Pet Watch
-            </strong>
-
+            <strong>Santa Cruz Pet Watch</strong>
             — Community-powered pet recovery.
-
         </div>
 
         <div>
-
             Built for Santa Cruz International School • 2026
-
         </div>
 
     </div>
@@ -2345,185 +1463,160 @@ footer {
 </footer>
 
 
-<!-- ======================================================
-     TOAST
-====================================================== -->
+<!-- AUTH MODAL -->
 
-<div
-    class="toast"
-    id="toast"
->
+<div class="modal" id="authModal">
 
-    <strong id="toastTitle">
-        ✓ Done!
-    </strong>
-
-    <br>
-
-    <span id="toastMessage">
-        Action completed.
-    </span>
-
-</div>
-
-
-<!-- ======================================================
-     MODAL
-====================================================== -->
-
-<div
-    class="modal-overlay"
-    id="modalOverlay"
->
-
-    <div class="modal">
+    <div class="modal-card">
 
         <div class="modal-header">
 
-            <h3>
-                Pet Report
-            </h3>
+            <h2>🐾 Pet Watch Account</h2>
 
-            <button
-                class="close-modal"
-                id="closeModal"
-                type="button"
-            >
+            <button class="close-modal" id="closeModal">
                 ×
             </button>
 
         </div>
 
-        <div
-            class="modal-body"
-            id="modalBody"
-        >
+
+        <div class="auth-tabs">
+
+            <button class="auth-tab active" id="loginTab">
+                Login
+            </button>
+
+            <button class="auth-tab" id="signupTab">
+                Sign Up
+            </button>
+
         </div>
+
+
+        <form class="auth-form active" id="loginForm">
+
+            <label>Email</label>
+
+            <input
+                id="loginEmail"
+                type="email"
+                required
+                placeholder="you@example.com"
+            >
+
+            <label>Password</label>
+
+            <input
+                id="loginPassword"
+                type="password"
+                required
+                placeholder="••••••••"
+            >
+
+            <button class="auth-submit">
+                Login
+            </button>
+
+            <div class="auth-message" id="loginMessage"></div>
+
+        </form>
+
+
+        <form class="auth-form" id="signupForm">
+
+            <label>Display Name</label>
+
+            <input
+                id="signupName"
+                type="text"
+                required
+                maxlength="40"
+                placeholder="Your name"
+            >
+
+            <label>Email</label>
+
+            <input
+                id="signupEmail"
+                type="email"
+                required
+                placeholder="you@example.com"
+            >
+
+            <label>Password</label>
+
+            <input
+                id="signupPassword"
+                type="password"
+                minlength="6"
+                required
+                placeholder="At least 6 characters"
+            >
+
+            <button class="auth-submit">
+                Create Account
+            </button>
+
+            <div class="auth-message" id="signupMessage"></div>
+
+        </form>
 
     </div>
 
 </div>
 
 
+<div class="toast" id="toast">
+    <strong id="toastTitle">✓ Success</strong>
+    <br>
+    <span id="toastText"></span>
+</div>
+
+
 <script>
 
-/* =========================================================
-   STORAGE KEYS
-========================================================= */
+/*
+===========================================================
+SUPABASE CONFIGURATION
+===========================================================
 
-const PET_STORAGE_KEY = "sc_pet_watch_reports_v2";
-const POINTS_STORAGE_KEY = "sc_pet_watch_points_v2";
-const HEROES_STORAGE_KEY = "sc_pet_watch_heroes_v2";
+REPLACE THESE TWO VALUES WITH YOUR SUPABASE PROJECT VALUES.
 
+IMPORTANT:
+Use the PUBLISHABLE/ANON browser key.
+NEVER put a service_role/secret key here.
+===========================================================
+*/
 
-/* =========================================================
-   DEFAULT REPORTS
-========================================================= */
+const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
+const SUPABASE_KEY = "YOUR_SUPABASE_PUBLISHABLE_KEY";
 
-const defaultPets = [
-
-    {
-        id: "lf001",
-        status: "Lost",
-        name: "Rumba",
-        species: "Dog",
-        breed: "Dachshund",
-        area: "Urubó",
-        date: "2026-08-08",
-        image: "https://placedog.net/500/500?id=12",
-        contact: "777-12345",
-        description:
-            "Female dachshund, very friendly but might be scared. Wearing a red collar.",
-        ownerCreated: false
-    },
-
-    {
-        id: "lf002",
-        status: "Found",
-        name: "Unknown",
-        species: "Cat",
-        breed: "Domestic Shorthair",
-        area: "Equipetrol",
-        date: "2026-08-09",
-        image: "https://placekitten.com/500/500",
-        contact: "777-98765",
-        description:
-            "Found hiding under a car near Ventura Mall. Very vocal and no collar was visible.",
-        ownerCreated: false
-    },
-
-    {
-        id: "lf003",
-        status: "Lost",
-        name: "Max",
-        species: "Dog",
-        breed: "Golden Retriever",
-        area: "Sirari",
-        date: "2026-08-05",
-        image: "https://placedog.net/500/500?id=43",
-        contact: "777-55555",
-        description:
-            "Large male Golden Retriever. Microchipped. Wandered off during the storm.",
-        ownerCreated: false
-    }
-
-];
+const db = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
 
 
-/* =========================================================
-   LOAD DATA
-========================================================= */
+/*
+===========================================================
+STATE
+===========================================================
+*/
 
-function loadPets() {
-
-    try {
-
-        const saved = localStorage.getItem(
-            PET_STORAGE_KEY
-        );
-
-        if (saved) {
-
-            const parsed = JSON.parse(saved);
-
-            if (Array.isArray(parsed)) {
-                return parsed;
-            }
-
-        }
-
-    } catch (error) {
-
-        console.error(
-            "Could not load saved reports:",
-            error
-        );
-
-    }
-
-    return defaultPets;
-
-}
+let currentUser = null;
+let currentProfile = null;
+let currentConversation = null;
+let realtimeChannel = null;
+let allPets = [];
 
 
-let pets = loadPets();
+/*
+===========================================================
+DOM
+===========================================================
+*/
 
-
-/* =========================================================
-   POINTS
-========================================================= */
-
-let userPoints = Number(
-    localStorage.getItem(POINTS_STORAGE_KEY)
-) || 1250;
-
-
-/* =========================================================
-   DOM
-========================================================= */
-
-const petGrid =
-    document.getElementById("petGrid");
+const petGrid = document.getElementById("petGrid");
 
 const statusFilter =
     document.getElementById("statusFilter");
@@ -2531,44 +1624,53 @@ const statusFilter =
 const areaFilter =
     document.getElementById("areaFilter");
 
-const searchFilter =
-    document.getElementById("searchFilter");
-
-const sortFilter =
-    document.getElementById("sortFilter");
-
-const mineFilter =
-    document.getElementById("mineFilter");
-
-const resetFilters =
-    document.getElementById("resetFilters");
-
 const lostCount =
     document.getElementById("lostCount");
 
 const foundCount =
     document.getElementById("foundCount");
 
-const pointsEarned =
-    document.getElementById("pointsEarned");
+const totalPoints =
+    document.getElementById("totalPoints");
 
-const pointsDisplay =
-    document.getElementById("pointsDisplay");
+const heroCount =
+    document.getElementById("heroCount");
 
-const communityHeroes =
-    document.getElementById("communityHeroes");
+const authButton =
+    document.getElementById("authButton");
 
-const progressBar =
-    document.getElementById("progressBar");
+const authModal =
+    document.getElementById("authModal");
 
-const levelText =
-    document.getElementById("levelText");
+const closeModal =
+    document.getElementById("closeModal");
 
-const levelPoints =
-    document.getElementById("levelPoints");
+const loginForm =
+    document.getElementById("loginForm");
 
-const reportForm =
-    document.getElementById("reportForm");
+const signupForm =
+    document.getElementById("signupForm");
+
+const loginTab =
+    document.getElementById("loginTab");
+
+const signupTab =
+    document.getElementById("signupTab");
+
+const conversationList =
+    document.getElementById("conversationList");
+
+const messages =
+    document.getElementById("messages");
+
+const chatHeader =
+    document.getElementById("chatHeader");
+
+const chatForm =
+    document.getElementById("chatForm");
+
+const messageInput =
+    document.getElementById("messageInput");
 
 const toast =
     document.getElementById("toast");
@@ -2576,275 +1678,1046 @@ const toast =
 const toastTitle =
     document.getElementById("toastTitle");
 
-const toastMessage =
-    document.getElementById("toastMessage");
-
-const modalOverlay =
-    document.getElementById("modalOverlay");
-
-const modalBody =
-    document.getElementById("modalBody");
-
-const closeModal =
-    document.getElementById("closeModal");
+const toastText =
+    document.getElementById("toastText");
 
 
-/* =========================================================
-   SAVE
-========================================================= */
+/*
+===========================================================
+TOAST
+===========================================================
+*/
 
-function savePets() {
+function showToast(title, text) {
 
-    localStorage.setItem(
-        PET_STORAGE_KEY,
-        JSON.stringify(pets)
+    toastTitle.textContent = title;
+    toastText.textContent = text;
+
+    toast.classList.add("show");
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 4000);
+}
+
+
+/*
+===========================================================
+AUTH MODAL
+===========================================================
+*/
+
+function openAuth() {
+    authModal.classList.add("show");
+}
+
+function closeAuth() {
+    authModal.classList.remove("show");
+}
+
+authButton.addEventListener("click", async () => {
+
+    if (currentUser) {
+
+        await db.auth.signOut();
+
+    } else {
+
+        openAuth();
+
+    }
+
+});
+
+closeModal.addEventListener(
+    "click",
+    closeAuth
+);
+
+authModal.addEventListener("click", e => {
+
+    if (e.target === authModal) {
+        closeAuth();
+    }
+
+});
+
+
+loginTab.addEventListener("click", () => {
+
+    loginTab.classList.add("active");
+    signupTab.classList.remove("active");
+
+    loginForm.classList.add("active");
+    signupForm.classList.remove("active");
+
+});
+
+
+signupTab.addEventListener("click", () => {
+
+    signupTab.classList.add("active");
+    loginTab.classList.remove("active");
+
+    signupForm.classList.add("active");
+    loginForm.classList.remove("active");
+
+});
+
+
+/*
+===========================================================
+SIGN UP
+===========================================================
+*/
+
+signupForm.addEventListener("submit", async event => {
+
+    event.preventDefault();
+
+    const name =
+        document.getElementById("signupName").value.trim();
+
+    const email =
+        document.getElementById("signupEmail").value.trim();
+
+    const password =
+        document.getElementById("signupPassword").value;
+
+    const message =
+        document.getElementById("signupMessage");
+
+    message.textContent = "Creating account...";
+
+    const { data, error } =
+        await db.auth.signUp({
+
+            email,
+            password,
+
+            options: {
+                data: {
+                    display_name: name
+                }
+            }
+
+        });
+
+    if (error) {
+
+        message.textContent = error.message;
+        return;
+
+    }
+
+    message.textContent =
+        "Account created! Check your email if confirmation is enabled.";
+
+    if (data.session) {
+        closeAuth();
+    }
+
+});
+
+
+/*
+===========================================================
+LOGIN
+===========================================================
+*/
+
+loginForm.addEventListener("submit", async event => {
+
+    event.preventDefault();
+
+    const email =
+        document.getElementById("loginEmail").value.trim();
+
+    const password =
+        document.getElementById("loginPassword").value;
+
+    const message =
+        document.getElementById("loginMessage");
+
+    message.textContent = "Logging in...";
+
+    const { error } =
+        await db.auth.signInWithPassword({
+            email,
+            password
+        });
+
+    if (error) {
+
+        message.textContent = error.message;
+        return;
+
+    }
+
+    message.textContent = "";
+
+    closeAuth();
+
+    showToast(
+        "✓ Welcome back!",
+        "You are now logged in."
     );
 
+});
+
+
+/*
+===========================================================
+AUTH STATE
+===========================================================
+*/
+
+db.auth.onAuthStateChange(async (_event, session) => {
+
+    currentUser =
+        session?.user || null;
+
+    await updateUserInterface();
+
+});
+
+
+async function updateUserInterface() {
+
+    if (!currentUser) {
+
+        currentProfile = null;
+
+        authButton.textContent = "Login";
+
+        document.getElementById(
+            "pointsPill"
+        ).textContent = "⭐ 0 Paw Points";
+
+        conversationList.innerHTML = `
+            <div class="empty">
+                Login to see your conversations.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    const { data: profile } =
+        await db
+        .from("profiles")
+        .select("*")
+        .eq("id", currentUser.id)
+        .single();
+
+
+    currentProfile = profile;
+
+    authButton.textContent =
+        `Logout (${profile?.display_name || "User"})`;
+
+
+    document.getElementById(
+        "pointsPill"
+    ).textContent =
+        `⭐ ${profile?.paw_points || 0} Paw Points`;
+
+
+    await loadConversations();
+
 }
 
 
-function savePoints() {
+/*
+===========================================================
+PETS
+===========================================================
+*/
 
-    localStorage.setItem(
-        POINTS_STORAGE_KEY,
-        String(userPoints)
-    );
+async function loadPets() {
+
+    const { data, error } =
+        await db
+        .from("pets")
+        .select("*")
+        .order("created_at", {
+            ascending:false
+        });
+
+
+    if (error) {
+
+        console.error(error);
+
+        /*
+        Demo fallback if Supabase isn't configured yet.
+        */
+
+        allPets = [
+            {
+                id:"demo1",
+                status:"Lost",
+                name:"Rumba",
+                species:"Dog",
+                breed:"Dachshund",
+                area:"Urubo",
+                date:"2026-08-08",
+                image:"https://placedog.net/500/500?id=12",
+                description:
+                    "Female dachshund, very friendly but might be scared. Wearing a red collar.",
+                owner_id:null
+            },
+            {
+                id:"demo2",
+                status:"Found",
+                name:"Unknown",
+                species:"Cat",
+                breed:"Domestic Shorthair",
+                area:"Equipetrol",
+                date:"2026-08-09",
+                image:"https://placehold.co/500x500/111827/ffffff?text=Cat",
+                description:
+                    "Found hiding under a car near Ventura Mall. Very vocal, no collar.",
+                owner_id:null
+            }
+        ];
+
+    } else {
+
+        allPets = data || [];
+
+    }
+
+
+    renderPets(allPets);
+    updateStats();
 
 }
 
-
-/* =========================================================
-   SANITIZE HTML
-========================================================= */
-
-function escapeHTML(value) {
-
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
-}
-
-
-/* =========================================================
-   POINT CALCULATION
-========================================================= */
 
 function calculatePoints(pet) {
 
-    if (pet.status === "Lost") {
-        return 150;
+    let points =
+        pet.status === "Lost"
+            ? 150
+            : 125;
+
+    if (pet.species === "Dog") {
+        points += 25;
     }
 
-    if (pet.status === "Found") {
-        return 125;
-    }
-
-    return 100;
+    return points;
 
 }
 
-
-/* =========================================================
-   STATUS HELPERS
-========================================================= */
-
-function getStatusClass(status) {
-
-    if (status === "Lost") {
-        return "status-lost";
-    }
-
-    if (status === "Found") {
-        return "status-found";
-    }
-
-    return "status-reunited";
-
-}
-
-
-function getStatusIcon(status) {
-
-    if (status === "Lost") {
-        return "🚨";
-    }
-
-    if (status === "Found") {
-        return "🏠";
-    }
-
-    return "💙";
-
-}
-
-
-/* =========================================================
-   DATE
-========================================================= */
 
 function formatDate(dateString) {
 
-    const date = new Date(
-        dateString + "T12:00:00"
-    );
+    if (!dateString) return "Today";
 
-    if (Number.isNaN(date.getTime())) {
-        return "Unknown date";
-    }
+    const date =
+        new Date(dateString);
 
     return date.toLocaleDateString(
         "en-US",
         {
-            month: "short",
-            day: "numeric",
-            year: "numeric"
+            month:"short",
+            day:"numeric",
+            year:"numeric"
         }
     );
 
 }
 
 
-/* =========================================================
-   FILTER
-========================================================= */
+function escapeHTML(value) {
 
-function getFilteredPets() {
-
-    const selectedStatus =
-        statusFilter.value;
-
-    const selectedArea =
-        areaFilter.value;
-
-    const search =
-        searchFilter.value
-            .trim()
-            .toLowerCase();
-
-    const mine =
-        mineFilter.value;
-
-
-    let filtered = pets.filter(
-        pet => {
-
-            const statusMatches =
-                selectedStatus === "All" ||
-                pet.status === selectedStatus;
-
-
-            const areaMatches =
-                selectedArea === "All" ||
-                pet.area === selectedArea;
-
-
-            const searchText = [
-                pet.name,
-                pet.species,
-                pet.breed,
-                pet.area,
-                pet.description
-            ]
-                .join(" ")
-                .toLowerCase();
-
-
-            const searchMatches =
-                !search ||
-                searchText.includes(search);
-
-
-            const mineMatches =
-                mine === "all" ||
-                pet.ownerCreated === true;
-
-
-            return (
-                statusMatches &&
-                areaMatches &&
-                searchMatches &&
-                mineMatches
-            );
-
-        }
-    );
-
-
-    if (sortFilter.value === "oldest") {
-
-        filtered.sort(
-            (a,b) =>
-                new Date(a.date) -
-                new Date(b.date)
-        );
-
-    }
-
-
-    if (sortFilter.value === "newest") {
-
-        filtered.sort(
-            (a,b) =>
-                new Date(b.date) -
-                new Date(a.date)
-        );
-
-    }
-
-
-    if (sortFilter.value === "points") {
-
-        filtered.sort(
-            (a,b) =>
-                calculatePoints(b) -
-                calculatePoints(a)
-        );
-
-    }
-
-
-    return filtered;
+    return String(value ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
 
 }
 
 
-/* =========================================================
-   RENDER
-========================================================= */
-
-function renderPets() {
-
-    const data =
-        getFilteredPets();
-
+function renderPets(data) {
 
     petGrid.innerHTML = "";
 
-
-    if (data.length === 0) {
+    if (!data.length) {
 
         petGrid.innerHTML = `
-
             <div class="empty">
+                <div style="font-size:45px">🔎</div>
+                <h3>No reports found</h3>
+                <p>Try changing your filters.</p>
+            </div>
+        `;
 
-                <div class="empty-icon">
-                    🔎
-                </div>
+        return;
+    }
 
-                <h3>
-                    No reports found
-                </h3>
 
-                <p>
-                    Try changing your search or filters.
-                </p>
+    data.forEach(pet => {
+
+        const points =
+            calculatePoints(pet);
+
+        const lost =
+            pet.status === "Lost";
+
+
+        const card =
+            document.createElement("article");
+
+        card.className = "pet-card";
+
+
+        card.innerHTML = `
+
+            <div class="pet-image-wrap">
+
+                <img
+                    class="pet-image"
+                    src="${escapeHTML(pet.image)}"
+                    alt="${escapeHTML(pet.name)}"
+                    onerror="this.src='https://placehold.co/500x500/111827/ffffff?text=Pet'"
+                >
+
+                <span class="status-badge ${
+                    lost
+                        ? "status-lost"
+                        : "status-found"
+                }">
+
+                    ${lost ? "🚨 LOST" : "🏠 FOUND"}
+
+                </span>
+
+                <span class="points-badge">
+                    ⭐ +${points} PTS
+                </span>
 
             </div>
 
+
+            <div class="pet-info">
+
+                <div class="pet-title">
+
+                    <h3>
+                        ${escapeHTML(pet.name || "Unknown")}
+                    </h3>
+
+                    <div class="pet-type">
+                        ${escapeHTML(pet.species)}
+                        •
+                        ${escapeHTML(pet.breed)}
+                    </div>
+
+                </div>
+
+
+                <div class="pet-details">
+
+                    <div class="detail">
+                        <span>📍 AREA</span>
+                        <strong>
+                            ${escapeHTML(pet.area)}
+                        </strong>
+                    </div>
+
+                    <div class="detail">
+                        <span>📅 REPORTED</span>
+                        <strong>
+                            ${formatDate(
+                                pet.date ||
+                                pet.created_at
+                            )}
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <p class="description">
+                    ${escapeHTML(pet.description)}
+                </p>
+
+
+                <div class="contact">
+
+                    <span class="contact-number">
+                        🔒 Private contact
+                    </span>
+
+                    <button
+                        class="help-btn message-owner"
+                        data-owner="${escapeHTML(
+                            pet.owner_id || ""
+                        )}"
+                    >
+                        💬 MESSAGE OWNER
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+
+
+        petGrid.appendChild(card);
+
+    });
+
+
+    document
+        .querySelectorAll(".message-owner")
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    const ownerId =
+                        button.dataset.owner;
+
+                    startPrivateChat(ownerId);
+
+                }
+            );
+
+        });
+
+}
+
+
+function filterPets() {
+
+    const status =
+        statusFilter.value;
+
+    const area =
+        areaFilter.value;
+
+
+    const filtered =
+        allPets.filter(pet => {
+
+            const statusOK =
+                status === "All" ||
+                pet.status === status;
+
+            const areaOK =
+                area === "All" ||
+                pet.area === area;
+
+            return statusOK && areaOK;
+
+        });
+
+
+    renderPets(filtered);
+
+}
+
+
+statusFilter.addEventListener(
+    "change",
+    filterPets
+);
+
+areaFilter.addEventListener(
+    "change",
+    filterPets
+);
+
+
+document
+.getElementById("resetFilters")
+.addEventListener("click", () => {
+
+    statusFilter.value = "All";
+    areaFilter.value = "All";
+
+    renderPets(allPets);
+
+});
+
+
+/*
+===========================================================
+STATISTICS
+===========================================================
+*/
+
+function updateStats() {
+
+    const lost =
+        allPets.filter(
+            p => p.status === "Lost"
+        ).length;
+
+    const found =
+        allPets.filter(
+            p => p.status === "Found"
+        ).length;
+
+    lostCount.textContent = lost;
+    foundCount.textContent = found;
+
+    const points =
+        allPets.reduce(
+            (sum, pet) =>
+                sum + calculatePoints(pet),
+            0
+        );
+
+    totalPoints.textContent = points;
+
+    heroCount.textContent =
+        currentProfile ? "1+" : "0";
+
+}
+
+
+/*
+===========================================================
+CREATE REPORT
+===========================================================
+*/
+
+document
+.getElementById("reportForm")
+.addEventListener("submit", async event => {
+
+    event.preventDefault();
+
+
+    if (!currentUser) {
+
+        showToast(
+            "🔐 Login required",
+            "Create an account before publishing a report."
+        );
+
+        openAuth();
+
+        return;
+
+    }
+
+
+    const status =
+        document.getElementById("reportStatus").value;
+
+    const name =
+        document.getElementById("petName").value.trim();
+
+    const species =
+        document.getElementById("petSpecies").value;
+
+    const breed =
+        document.getElementById("petBreed").value.trim();
+
+    const area =
+        document.getElementById("area").value;
+
+    const image =
+        document.getElementById("imageUrl").value.trim();
+
+    const description =
+        document.getElementById("description").value.trim();
+
+
+    const { error } =
+        await db
+        .from("pets")
+        .insert({
+
+            owner_id:currentUser.id,
+            status,
+            name,
+            species,
+            breed,
+            area,
+            image,
+            description,
+            date:new Date()
+                .toISOString()
+                .split("T")[0]
+
+        });
+
+
+    if (error) {
+
+        console.error(error);
+
+        showToast(
+            "❌ Error",
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    event.target.reset();
+
+    showToast(
+        "✓ Report Published",
+        "Your pet report is now visible to the community."
+    );
+
+
+    await loadPets();
+
+});
+
+
+/*
+===========================================================
+PRIVATE CHAT
+===========================================================
+*/
+
+async function startPrivateChat(otherUserId) {
+
+    if (!currentUser) {
+
+        showToast(
+            "🔐 Login required",
+            "Log in to privately contact the pet owner."
+        );
+
+        openAuth();
+
+        return;
+
+    }
+
+
+    if (!otherUserId) {
+
+        showToast(
+            "Demo report",
+            "This demo report does not have an owner account."
+        );
+
+        return;
+
+    }
+
+
+    if (otherUserId === currentUser.id) {
+
+        showToast(
+            "That's your report",
+            "You cannot message yourself."
+        );
+
+        return;
+
+    }
+
+
+    const { data, error } =
+        await db.rpc(
+            "get_or_create_conversation",
+            {
+                other_user_id:otherUserId
+            }
+        );
+
+
+    if (error) {
+
+        console.error(error);
+
+        showToast(
+            "Chat error",
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    currentConversation =
+        data;
+
+
+    document
+        .getElementById("chat")
+        .scrollIntoView({
+            behavior:"smooth"
+        });
+
+
+    await loadConversations();
+
+    await selectConversation(
+        currentConversation
+    );
+
+}
+
+
+/*
+===========================================================
+LOAD CONVERSATIONS
+===========================================================
+*/
+
+async function loadConversations() {
+
+    if (!currentUser) return;
+
+
+    const { data, error } =
+        await db
+        .from("conversation_members")
+        .select(`
+            conversation_id,
+            conversations (
+                id,
+                created_at
+            )
+        `)
+        .eq("user_id", currentUser.id);
+
+
+    if (error) {
+
+        console.error(error);
+        return;
+
+    }
+
+
+    if (!data?.length) {
+
+        conversationList.innerHTML = `
+            <div class="empty">
+                No private conversations yet.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    const conversations = [];
+
+
+    for (const row of data) {
+
+        const conversation =
+            row.conversations;
+
+
+        const { data: members } =
+            await db
+            .from("conversation_members")
+            .select(`
+                user_id,
+                profiles (
+                    id,
+                    display_name
+                )
+            `)
+            .eq(
+                "conversation_id",
+                conversation.id
+            );
+
+
+        const other =
+            members?.find(
+                member =>
+                    member.user_id !==
+                    currentUser.id
+            );
+
+
+        conversations.push({
+            id:conversation.id,
+            other:other?.profiles
+        });
+
+    }
+
+
+    conversationList.innerHTML = "";
+
+
+    conversations.forEach(conversation => {
+
+        const div =
+            document.createElement("div");
+
+        div.className =
+            "conversation" +
+            (
+                currentConversation?.id ===
+                conversation.id
+                    ? " active"
+                    : ""
+            );
+
+
+        div.innerHTML = `
+
+            <div class="avatar">
+                ${
+                    (
+                        conversation.other
+                        ?.display_name ||
+                        "?"
+                    )
+                    .charAt(0)
+                    .toUpperCase()
+                }
+            </div>
+
+            <div class="conversation-info">
+
+                <strong>
+                    ${
+                        escapeHTML(
+                            conversation.other
+                            ?.display_name ||
+                            "Pet Hero"
+                        )
+                    }
+                </strong>
+
+                <small>
+                    Private conversation
+                </small>
+
+            </div>
+
+        `;
+
+
+        div.addEventListener(
+            "click",
+            () => selectConversation(
+                conversation
+            )
+        );
+
+
+        conversationList.appendChild(div);
+
+    });
+
+}
+
+
+/*
+===========================================================
+SELECT CHAT
+===========================================================
+*/
+
+async function selectConversation(
+    conversation
+) {
+
+    currentConversation =
+        conversation;
+
+
+    const otherName =
+        conversation.other
+        ?.display_name ||
+        "Pet Hero";
+
+
+    chatHeader.innerHTML = `
+
+        <strong>
+            💬 ${escapeHTML(otherName)}
+        </strong>
+
+        <small>
+            Private conversation
+        </small>
+
+    `;
+
+
+    await loadMessages();
+
+    subscribeToMessages();
+
+    messageInput.focus();
+
+
+    document
+        .querySelectorAll(".conversation")
+        .forEach(element =>
+            element.classList.remove("active")
+        );
+
+}
+
+
+/*
+===========================================================
+LOAD MESSAGES
+===========================================================
+*/
+
+async function loadMessages() {
+
+    if (!currentConversation) return;
+
+
+    const { data, error } =
+        await db
+        .from("messages")
+        .select("*")
+        .eq(
+            "conversation_id",
+            currentConversation.id
+        )
+        .order("created_at", {
+            ascending:true
+        });
+
+
+    if (error) {
+
+        console.error(error);
+        return;
+
+    }
+
+
+    messages.innerHTML = "";
+
+
+    if (!data?.length) {
+
+        messages.innerHTML = `
+            <div class="no-chat">
+                <div>
+                    <div style="font-size:40px">🐾</div>
+                    <p>
+                        Start the conversation.
+                    </p>
+                </div>
+            </div>
         `;
 
         return;
@@ -2853,1091 +2726,238 @@ function renderPets() {
 
 
     data.forEach(
-        pet => {
-
-            const points =
-                calculatePoints(pet);
-
-            const statusClass =
-                getStatusClass(
-                    pet.status
-                );
-
-            const statusIcon =
-                getStatusIcon(
-                    pet.status
-                );
-
-
-            const card =
-                document.createElement(
-                    "article"
-                );
-
-            card.className =
-                "pet-card";
-
-
-            card.innerHTML = `
-
-                <div class="pet-image-wrap">
-
-                    <img
-                        class="pet-image"
-                        src="${escapeHTML(pet.image || fallbackImage())}"
-                        alt="${escapeHTML(pet.name)} - ${escapeHTML(pet.status)} pet report"
-                        onerror="this.src='${fallbackImage()}'"
-                    >
-
-                    <span class="status-badge ${statusClass}">
-                        ${statusIcon}
-                        ${escapeHTML(pet.status).toUpperCase()}
-                    </span>
-
-                    <span class="points-badge">
-                        ⭐ +${points} PTS
-                    </span>
-
-                </div>
-
-
-                <div class="pet-info">
-
-                    <div class="pet-title">
-
-                        <div>
-
-                            <h3>
-                                ${escapeHTML(pet.name)}
-                            </h3>
-
-                            <div class="pet-type">
-                                ${escapeHTML(pet.species)}
-                                •
-                                ${escapeHTML(pet.breed || "Breed unknown")}
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="pet-details">
-
-                        <div class="detail">
-
-                            <span>
-                                📍 AREA
-                            </span>
-
-                            <strong>
-                                ${escapeHTML(pet.area)}
-                            </strong>
-
-                        </div>
-
-
-                        <div class="detail">
-
-                            <span>
-                                📅 REPORTED
-                            </span>
-
-                            <strong>
-                                ${formatDate(pet.date)}
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-
-                    <p class="description">
-                        ${escapeHTML(pet.description)}
-                    </p>
-
-
-                    <div class="contact">
-
-                        <span class="contact-number">
-                            📞 ${escapeHTML(pet.contact)}
-                        </span>
-
-
-                        <div class="card-actions">
-
-                            <button
-                                class="action-btn"
-                                onclick="viewPet('${pet.id}')"
-                            >
-                                👁 Details
-                            </button>
-
-                            <button
-                                class="action-btn help"
-                                onclick="contactPet('${pet.id}')"
-                            >
-                                💬 Contact
-                            </button>
-
-                            <button
-                                class="action-btn share"
-                                onclick="sharePet('${pet.id}')"
-                            >
-                                📤 Share
-                            </button>
-
-                            ${
-                                pet.status !== "Reunited"
-                                ?
-                                `
-                                <button
-                                    class="action-btn reunite"
-                                    onclick="reunitePet('${pet.id}')"
-                                >
-                                    💙 Reunited
-                                </button>
-                                `
-                                :
-                                `
-                                <button
-                                    class="action-btn"
-                                    onclick="copyReport('${pet.id}')"
-                                >
-                                    🔗 Copy Link
-                                </button>
-                                `
-                            }
-
-                            ${
-                                pet.ownerCreated
-                                ?
-                                `
-                                <button
-                                    class="action-btn delete"
-                                    onclick="deletePet('${pet.id}')"
-                                >
-                                    🗑 Delete
-                                </button>
-                                `
-                                :
-                                ""
-                            }
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            `;
-
-
-            petGrid.appendChild(card);
-
-        }
+        message =>
+            addMessageToScreen(message)
     );
 
-}
 
-
-/* =========================================================
-   FALLBACK IMAGE
-========================================================= */
-
-function fallbackImage() {
-
-    return "https://placehold.co/800x600/111827/ffffff?text=🐾+Pet";
+    scrollMessages();
 
 }
 
 
-/* =========================================================
-   CONTACT PET
-========================================================= */
+/*
+===========================================================
+DISPLAY MESSAGE
+===========================================================
+*/
 
-function contactPet(id) {
+function addMessageToScreen(message) {
 
-    const pet =
-        pets.find(
-            item => item.id === id
-        );
-
-
-    if (!pet) {
-        return;
-    }
+    const mine =
+        message.sender_id ===
+        currentUser.id;
 
 
-    const cleanPhone =
-        String(pet.contact)
-            .replace(/[^\d+]/g, "");
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.className =
+        "message " +
+        (mine ? "mine" : "");
 
 
-    const message =
-        `Hello! I saw the ${pet.status.toLowerCase()} pet report for ${pet.name} on Santa Cruz Pet Watch. I may have information that can help.`;
-
-    
-    if (
-        cleanPhone.length >= 7 &&
-        !pet.contact.includes("@")
-    ) {
-
-        const whatsappNumber =
-            cleanPhone.replace(
-                /^\+/,
-                ""
-            );
-
-
-        window.open(
-            `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`,
-            "_blank"
-        );
-
-        return;
-
-    }
-
-
-    if (
-        pet.contact.includes("@")
-    ) {
-
-        window.location.href =
-            `mailto:${pet.contact}?subject=${encodeURIComponent(
-                "Pet report: " + pet.name
-            )}&body=${encodeURIComponent(message)}`;
-
-        return;
-
-    }
-
-
-    showToast(
-        "📞 Contact",
-        `Please contact the reporter at ${pet.contact}.`
-    );
-
-}
-
-
-/* =========================================================
-   VIEW PET
-========================================================= */
-
-function viewPet(id) {
-
-    const pet =
-        pets.find(
-            item => item.id === id
-        );
-
-
-    if (!pet) {
-        return;
-    }
-
-
-    const points =
-        calculatePoints(pet);
-
-
-    modalBody.innerHTML = `
-
-        <img
-            class="modal-image"
-            src="${escapeHTML(pet.image || fallbackImage())}"
-            onerror="this.src='${fallbackImage()}'"
-            alt="${escapeHTML(pet.name)}"
-        >
-
-
-        <span
-            class="modal-status ${getStatusClass(pet.status)}"
-        >
-            ${getStatusIcon(pet.status)}
-            ${escapeHTML(pet.status).toUpperCase()}
-        </span>
-
-
-        <h2>
-            ${escapeHTML(pet.name)}
-        </h2>
-
-
-        <div class="modal-muted">
-
-            ${escapeHTML(pet.species)}
-            •
-            ${escapeHTML(pet.breed || "Breed unknown")}
-            •
-            ${escapeHTML(pet.area)}
-
-        </div>
-
-
-        <p class="modal-description">
-
-            <strong>
-                Reported:
-            </strong>
-
-            ${formatDate(pet.date)}
-
-            <br><br>
-
-            ${escapeHTML(pet.description)}
-
-        </p>
-
-
-        <p
-            class="modal-description"
-            style="color:var(--yellow)"
-        >
-
-            ⭐ Community reward:
-            ${points} Paw Points
-
-        </p>
-
-
-        <div class="modal-actions">
-
-            <button
-                onclick="contactPet('${pet.id}'); closePetModal();"
-            >
-                💬 Contact Reporter
-            </button>
-
-            <button
-                onclick="sharePet('${pet.id}'); closePetModal();"
-            >
-                📤 Share Report
-            </button>
-
-            ${
-                pet.status !== "Reunited"
-                ?
-                `
-                <button
-                    onclick="reunitePet('${pet.id}'); closePetModal();"
-                >
-                    💙 Mark Reunited
-                </button>
-                `
-                :
-                ""
+    const time =
+        new Date(
+            message.created_at
+        ).toLocaleTimeString(
+            [],
+            {
+                hour:"2-digit",
+                minute:"2-digit"
             }
+        );
 
-            <button
-                onclick="copyReport('${pet.id}')"
-            >
-                🔗 Copy Report
-            </button>
+
+    wrapper.innerHTML = `
+
+        <div class="message-bubble">
+
+            ${escapeHTML(
+                message.body
+            )}
+
+            <span class="message-time">
+                ${time}
+            </span>
 
         </div>
 
     `;
 
 
-    modalOverlay.classList.add(
-        "show"
-    );
+    messages.appendChild(wrapper);
 
 }
 
 
-function closePetModal() {
-
-    modalOverlay.classList.remove(
-        "show"
-    );
-
-}
-
-
-closeModal.addEventListener(
-    "click",
-    closePetModal
-);
-
-
-modalOverlay.addEventListener(
-    "click",
-    event => {
-
-        if (
-            event.target === modalOverlay
-        ) {
-
-            closePetModal();
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   SHARE
-========================================================= */
-
-async function sharePet(id) {
-
-    const pet =
-        pets.find(
-            item => item.id === id
-        );
-
-
-    if (!pet) {
-        return;
-    }
-
-
-    const text =
-        `🐾 ${pet.status} pet report: ${pet.name}
-📍 ${pet.area}
-🐕 ${pet.species} • ${pet.breed || "Unknown breed"}
-
-${pet.description}
-
-Santa Cruz Pet Watch`;
-
-
-    if (
-        navigator.share
-    ) {
-
-        try {
-
-            await navigator.share({
-
-                title:
-                    `${pet.status}: ${pet.name}`,
-
-                text:
-                    text,
-
-                url:
-                    window.location.href
-
-            });
-
-
-            showToast(
-                "✓ Shared",
-                "The report was shared successfully."
-            );
-
-
-            return;
-
-        } catch (error) {
-
-            if (
-                error.name === "AbortError"
-            ) {
-
-                return;
-
-            }
-
-        }
-
-    }
-
-
-    try {
-
-        await navigator.clipboard.writeText(
-            text
-        );
-
-        showToast(
-            "✓ Copied",
-            "The report text was copied. You can paste it into WhatsApp or social media."
-        );
-
-    } catch (error) {
-
-        showToast(
-            "Share",
-            "Copy the report details from the Details button."
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   COPY REPORT
-========================================================= */
-
-async function copyReport(id) {
-
-    const pet =
-        pets.find(
-            item => item.id === id
-        );
-
-
-    if (!pet) {
-        return;
-    }
-
-
-    const text =
-        `🐾 ${pet.status.toUpperCase()} PET REPORT
-
-Name: ${pet.name}
-Species: ${pet.species}
-Breed: ${pet.breed || "Unknown"}
-Area: ${pet.area}
-Reported: ${formatDate(pet.date)}
-Contact: ${pet.contact}
-
-${pet.description}
-
-Santa Cruz Pet Watch`;
-
-
-    try {
-
-        await navigator.clipboard.writeText(
-            text
-        );
-
-
-        showToast(
-            "✓ Copied",
-            "The complete report has been copied."
-        );
-
-    } catch (error) {
-
-        showToast(
-            "Copy unavailable",
-            "Your browser blocked clipboard access."
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   REUNITE PET
-========================================================= */
-
-function reunitePet(id) {
-
-    const pet =
-        pets.find(
-            item => item.id === id
-        );
-
-
-    if (!pet) {
-        return;
-    }
-
-
-    if (
-        !confirm(
-            `Mark ${pet.name} as reunited with their family?`
-        )
-    ) {
-
-        return;
-
-    }
-
-
-    pet.status =
-        "Reunited";
-
-
-    pet.reunitedAt =
-        new Date()
-            .toISOString()
-            .split("T")[0];
-
-
-    userPoints += 50;
-
-
-    savePets();
-    savePoints();
-
-    renderPets();
-    updateStats();
-    updateHeroLevel();
-
-
-    showToast(
-        "💙 Pet Reunited!",
-        `${pet.name} has been marked as reunited. You earned 50 Paw Points.`
-    );
-
-}
-
-
-/* =========================================================
-   DELETE PET
-========================================================= */
-
-function deletePet(id) {
-
-    const pet =
-        pets.find(
-            item => item.id === id
-        );
-
-
-    if (!pet) {
-        return;
-    }
-
-
-    if (!pet.ownerCreated) {
-
-        showToast(
-            "Not available",
-            "Only reports created on this browser can be removed."
-        );
-
-        return;
-
-    }
-
-
-    if (
-        !confirm(
-            `Delete the report for ${pet.name}? This cannot be undone.`
-        )
-    ) {
-
-        return;
-
-    }
-
-
-    pets =
-        pets.filter(
-            item => item.id !== id
-        );
-
-
-    savePets();
-
-    renderPets();
-
-    updateStats();
-
-
-    showToast(
-        "🗑 Report Removed",
-        "Your report was removed from this browser."
-    );
-
-}
-
-
-/* =========================================================
-   STATISTICS
-========================================================= */
-
-function updateStats() {
-
-    const lost =
-        pets.filter(
-            pet => pet.status === "Lost"
-        ).length;
-
-
-    const found =
-        pets.filter(
-            pet => pet.status === "Found"
-        ).length;
-
-
-    lostCount.textContent =
-        lost;
-
-
-    foundCount.textContent =
-        found;
-
-
-    pointsDisplay.textContent =
-        userPoints.toLocaleString();
-
-
-    pointsEarned.textContent =
-        (
-            2450 +
-            Math.max(
-                0,
-                userPoints - 1250
-            )
-        ).toLocaleString();
-
-
-    const savedHeroes =
-        Number(
-            localStorage.getItem(
-                HEROES_STORAGE_KEY
-            )
-        ) || 128;
-
-
-    communityHeroes.textContent =
-        savedHeroes;
-
-}
-
-
-/* =========================================================
-   HERO LEVEL
-========================================================= */
-
-function updateHeroLevel() {
-
-    const level =
-        Math.max(
-            1,
-            Math.floor(
-                userPoints / 300
-            )
-        );
-
-
-    const currentLevelStart =
-        level * 300;
-
-
-    const nextLevel =
-        (level + 1) * 300;
-
-
-    const progress =
-        Math.min(
-            100,
-            (
-                (
-                    userPoints -
-                    currentLevelStart
-                ) /
-                (
-                    nextLevel -
-                    currentLevelStart
-                )
-            ) * 100
-        );
-
-
-    progressBar.style.width =
-        `${progress}%`;
-
-
-    levelText.textContent =
-        `Level ${level}`;
-
-
-    levelPoints.textContent =
-        `${userPoints.toLocaleString()} / ${nextLevel.toLocaleString()}`;
-
-}
-
-
-/* =========================================================
-   FILTER EVENTS
-========================================================= */
-
-[
-    statusFilter,
-    areaFilter,
-    searchFilter,
-    sortFilter,
-    mineFilter
-].forEach(
-    element => {
-
-        element.addEventListener(
-            "input",
-            renderPets
-        );
-
-        element.addEventListener(
-            "change",
-            renderPets
-        );
-
-    }
-);
-
-
-resetFilters.addEventListener(
-    "click",
-    () => {
-
-        statusFilter.value =
-            "All";
-
-        areaFilter.value =
-            "All";
-
-        searchFilter.value =
-            "";
-
-        sortFilter.value =
-            "newest";
-
-        mineFilter.value =
-            "all";
-
-        renderPets();
-
-    }
-);
-
-
-/* =========================================================
-   FORM SUBMISSION
-========================================================= */
-
-reportForm.addEventListener(
+/*
+===========================================================
+SEND MESSAGE
+===========================================================
+*/
+
+chatForm.addEventListener(
     "submit",
-    function(event) {
+    async event => {
 
         event.preventDefault();
 
 
-        if (
-            !reportForm.checkValidity()
-        ) {
+        if (!currentUser) {
 
-            reportForm.reportValidity();
+            openAuth();
+            return;
+
+        }
+
+
+        if (!currentConversation) {
+
+            showToast(
+                "Choose a chat",
+                "Select a conversation first."
+            );
 
             return;
 
         }
 
 
-        const status =
-            document.getElementById(
-                "reportStatus"
-            ).value;
+        const body =
+            messageInput.value.trim();
 
 
-        const name =
-            document.getElementById(
-                "petName"
-            ).value.trim();
+        if (!body) return;
 
 
-        const species =
-            document.getElementById(
-                "species"
-            ).value;
+        messageInput.disabled = true;
 
 
-        const breed =
-            document.getElementById(
-                "breed"
-            ).value.trim();
+        const { error } =
+            await db
+            .from("messages")
+            .insert({
 
+                conversation_id:
+                    currentConversation.id,
 
-        const area =
-            document.getElementById(
-                "area"
-            ).value;
+                sender_id:
+                    currentUser.id,
 
+                body
 
-        const contact =
-            document.getElementById(
-                "contact"
-            ).value.trim();
-
-
-        const image =
-            document.getElementById(
-                "imageUrl"
-            ).value.trim();
-
-
-        const description =
-            document.getElementById(
-                "description"
-            ).value.trim();
-
-
-        const newPet = {
-
-            id:
-                "user-" +
-                Date.now() +
-                "-" +
-                Math.random()
-                    .toString(36)
-                    .slice(2, 7),
-
-            status:
-                status,
-
-            name:
-                name,
-
-            species:
-                species,
-
-            breed:
-                breed || "Unknown",
-
-            area:
-                area,
-
-            date:
-                new Date()
-                    .toISOString()
-                    .split("T")[0],
-
-            image:
-                image || fallbackImage(),
-
-            contact:
-                contact,
-
-            description:
-                description,
-
-            ownerCreated:
-                true
-
-        };
-
-
-        pets.unshift(
-            newPet
-        );
-
-
-        savePets();
-
-
-        reportForm.reset();
-
-
-        renderPets();
-
-        updateStats();
-
-
-        userPoints += 25;
-
-        savePoints();
-
-        updateStats();
-
-        updateHeroLevel();
-
-
-        document
-            .getElementById("reports")
-            .scrollIntoView({
-                behavior: "smooth"
             });
 
 
-        showToast(
-            "✓ Report Published!",
-            `${name}'s report is now visible on this device. You earned 25 Paw Points.`
-        );
+        messageInput.disabled = false;
+
+
+        if (error) {
+
+            console.error(error);
+
+            showToast(
+                "❌ Message failed",
+                error.message
+            );
+
+            return;
+
+        }
+
+
+        messageInput.value = "";
 
     }
 );
 
 
-/* =========================================================
-   TOAST
-========================================================= */
+/*
+===========================================================
+REALTIME CHAT
+===========================================================
+*/
 
-let toastTimer;
+function subscribeToMessages() {
 
+    if (realtimeChannel) {
 
-function showToast(
-    title,
-    message
-) {
-
-    toastTitle.textContent =
-        title;
-
-    toastMessage.textContent =
-        message;
-
-
-    toast.classList.add(
-        "show"
-    );
-
-
-    clearTimeout(
-        toastTimer
-    );
-
-
-    toastTimer =
-        setTimeout(
-            () => {
-
-                toast.classList.remove(
-                    "show"
-                );
-
-            },
-            4500
+        db.removeChannel(
+            realtimeChannel
         );
-
-}
-
-
-/* =========================================================
-   DEMO DATA RESET
-========================================================= */
-
-function checkForDemoReset() {
-
-    const hasData =
-        localStorage.getItem(
-            PET_STORAGE_KEY
-        );
-
-
-    if (!hasData) {
-
-        savePets();
 
     }
 
+
+    if (!currentConversation) return;
+
+
+    realtimeChannel =
+        db
+        .channel(
+            "chat-" +
+            currentConversation.id
+        )
+        .on(
+            "postgres_changes",
+            {
+                event:"INSERT",
+                schema:"public",
+                table:"messages",
+                filter:
+                    "conversation_id=eq." +
+                    currentConversation.id
+            },
+            payload => {
+
+                addMessageToScreen(
+                    payload.new
+                );
+
+                scrollMessages();
+
+            }
+        )
+        .subscribe();
+
 }
 
 
-/* =========================================================
-   INITIALIZE
-========================================================= */
+function scrollMessages() {
 
-checkForDemoReset();
+    messages.scrollTop =
+        messages.scrollHeight;
 
-renderPets();
+}
 
-updateStats();
 
-updateHeroLevel();
+/*
+===========================================================
+INITIAL LOAD
+===========================================================
+*/
+
+async function initialize() {
+
+    const {
+        data
+    } = await db.auth.getSession();
+
+
+    currentUser =
+        data.session?.user ||
+        null;
+
+
+    await loadPets();
+
+    await updateUserInterface();
+
+}
+
+
+initialize();
 
 </script>
 
