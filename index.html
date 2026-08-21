@@ -4,9 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Santa Cruz Pet Watch | Paw Bounty</title>
+<title>Santa Cruz Pet Watch | Lost & Found Pets</title>
+
+<meta
+    name="description"
+    content="Santa Cruz Pet Watch helps residents of Santa Cruz de la Sierra report, find and reunite lost and found pets."
+>
 
 <style>
+
 /* =========================================================
    RESET
 ========================================================= */
@@ -37,7 +43,7 @@ body {
 
 :root {
     --bg: #080b16;
-    --panel: rgba(18, 23, 40, .82);
+    --panel: rgba(18, 23, 40, .88);
     --panel-light: #151b2f;
     --border: rgba(255,255,255,.09);
 
@@ -53,6 +59,29 @@ body {
 }
 
 /* =========================================================
+   GENERAL
+========================================================= */
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+a {
+    color: inherit;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* =========================================================
    HEADER
 ========================================================= */
 
@@ -61,7 +90,7 @@ header {
     top: 0;
     z-index: 1000;
     backdrop-filter: blur(20px);
-    background: rgba(8, 11, 22, .82);
+    background: rgba(8, 11, 22, .88);
     border-bottom: 1px solid var(--border);
 }
 
@@ -220,6 +249,10 @@ header {
     font-weight: 800;
     font-size: 13px;
     transition: .2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
 }
 
 .btn-primary {
@@ -424,7 +457,7 @@ header {
 
 .filter-row {
     display: grid;
-    grid-template-columns: 1fr 1fr auto;
+    grid-template-columns: 1.4fr 1fr 1fr auto;
     gap: 12px;
 }
 
@@ -437,7 +470,9 @@ header {
     margin-bottom: 7px;
 }
 
-select {
+input,
+select,
+textarea {
     width: 100%;
     padding: 13px;
     border-radius: 11px;
@@ -445,11 +480,13 @@ select {
     background: #0d1221;
     color: white;
     outline: none;
-    cursor: pointer;
 }
 
-select:focus {
+input:focus,
+select:focus,
+textarea:focus {
     border-color: var(--yellow);
+    box-shadow: 0 0 0 3px rgba(255,200,87,.06);
 }
 
 .reset-btn {
@@ -527,6 +564,11 @@ select:focus {
     color: #06271b;
 }
 
+.status-reunited {
+    background: rgba(91,140,255,.9);
+    color: white;
+}
+
 .points-badge {
     position: absolute;
     right: 13px;
@@ -593,10 +635,6 @@ select:focus {
 
 .contact {
     margin-top: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
     padding-top: 14px;
     border-top: 1px solid var(--border);
 }
@@ -605,16 +643,46 @@ select:focus {
     color: var(--green);
     font-weight: 800;
     font-size: 12px;
+    display: block;
+    margin-bottom: 12px;
 }
 
-.help-btn {
-    background: rgba(255,200,87,.1);
-    border: 1px solid rgba(255,200,87,.2);
-    color: var(--yellow);
-    padding: 8px 10px;
+.card-actions {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 7px;
+}
+
+.action-btn {
+    padding: 9px 7px;
     border-radius: 9px;
-    font-size: 11px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.045);
+    color: white;
+    font-size: 10px;
     font-weight: 800;
+    transition: .2s;
+}
+
+.action-btn:hover {
+    background: rgba(255,255,255,.1);
+}
+
+.action-btn.help {
+    color: var(--yellow);
+    border-color: rgba(255,200,87,.2);
+}
+
+.action-btn.share {
+    color: var(--blue);
+}
+
+.action-btn.reunite {
+    color: var(--green);
+}
+
+.action-btn.delete {
+    color: var(--red);
 }
 
 /* =========================================================
@@ -751,9 +819,10 @@ select:focus {
 
 .progress-bar {
     height: 100%;
-    width: 72%;
+    width: 0;
     background: linear-gradient(90deg, var(--blue), var(--purple));
     border-radius: inherit;
+    transition: width .5s ease;
 }
 
 .level-bottom {
@@ -840,26 +909,6 @@ select:focus {
     color: #e2e8f0;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
-    width: 100%;
-    padding: 13px;
-    background: #0d1221;
-    border: 1px solid var(--border);
-    border-radius: 11px;
-    color: white;
-    outline: none;
-    font-family: inherit;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-    border-color: var(--yellow);
-    box-shadow: 0 0 0 3px rgba(255,200,87,.06);
-}
-
 textarea {
     min-height: 120px;
     resize: vertical;
@@ -869,6 +918,7 @@ textarea {
     color: var(--muted);
     font-size: 10px;
     margin-top: 12px;
+    line-height: 1.5;
 }
 
 .submit-btn {
@@ -886,6 +936,51 @@ textarea {
 
 .submit-btn:hover {
     transform: translateY(-2px);
+}
+
+/* =========================================================
+   COMMUNITY HELP
+========================================================= */
+
+.help-section {
+    margin-top: 60px;
+}
+
+.help-grid {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 15px;
+}
+
+.help-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 22px;
+}
+
+.help-card .help-icon {
+    font-size: 30px;
+}
+
+.help-card h3 {
+    margin-top: 12px;
+}
+
+.help-card p {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
+    margin-top: 7px;
+}
+
+.help-card a {
+    display: inline-block;
+    margin-top: 15px;
+    color: var(--yellow);
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 12px;
 }
 
 /* =========================================================
@@ -920,7 +1015,7 @@ footer {
     position: fixed;
     bottom: 25px;
     right: 25px;
-    z-index: 2000;
+    z-index: 3000;
     background: #111827;
     border: 1px solid rgba(56,232,161,.3);
     box-shadow: 0 20px 50px rgba(0,0,0,.4);
@@ -930,6 +1025,7 @@ footer {
     opacity: 0;
     transition: .3s;
     max-width: 350px;
+    pointer-events: none;
 }
 
 .toast.show {
@@ -942,10 +1038,119 @@ footer {
 }
 
 /* =========================================================
+   MODAL
+========================================================= */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.72);
+    backdrop-filter: blur(8px);
+    z-index: 4000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-overlay.show {
+    display: flex;
+}
+
+.modal {
+    width: min(600px, 100%);
+    max-height: 90vh;
+    overflow-y: auto;
+    background: #111827;
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    box-shadow: 0 30px 100px rgba(0,0,0,.6);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 22px;
+    border-bottom: 1px solid var(--border);
+}
+
+.modal-header h3 {
+    font-size: 20px;
+}
+
+.close-modal {
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.05);
+    color: white;
+    font-size: 18px;
+}
+
+.modal-body {
+    padding: 22px;
+}
+
+.modal-image {
+    width: 100%;
+    max-height: 330px;
+    object-fit: cover;
+    border-radius: 15px;
+    margin-bottom: 18px;
+}
+
+.modal-status {
+    display: inline-block;
+    padding: 7px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 900;
+    margin-bottom: 10px;
+}
+
+.modal-body h2 {
+    margin-bottom: 5px;
+}
+
+.modal-muted {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.modal-description {
+    color: #cbd5e1;
+    line-height: 1.7;
+    margin-top: 15px;
+    font-size: 13px;
+}
+
+.modal-actions {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 9px;
+    margin-top: 20px;
+}
+
+.modal-actions button,
+.modal-actions a {
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.05);
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    font-weight: 800;
+    font-size: 12px;
+}
+
+/* =========================================================
    RESPONSIVE
 ========================================================= */
 
-@media(max-width: 950px) {
+@media(max-width: 1000px) {
 
     .hero {
         grid-template-columns: 1fr;
@@ -972,6 +1177,18 @@ footer {
     .report-layout {
         grid-template-columns: 1fr;
     }
+
+    .filter-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .filter-row .reset-btn {
+        width: 100%;
+    }
+
+    .help-grid {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 
 @media(max-width: 650px) {
@@ -982,6 +1199,11 @@ footer {
 
     .nav-links {
         display: none;
+    }
+
+    .points-pill {
+        font-size: 11px;
+        padding: 8px 10px;
     }
 
     .hero {
@@ -1006,10 +1228,6 @@ footer {
         grid-template-columns: 1fr;
     }
 
-    .reset-btn {
-        width: 100%;
-    }
-
     .pet-grid {
         grid-template-columns: 1fr;
     }
@@ -1022,10 +1240,29 @@ footer {
         grid-column: auto;
     }
 
+    .help-grid {
+        grid-template-columns: 1fr;
+    }
+
     .footer-inner {
         flex-direction: column;
     }
+
+    .modal-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .leader-row {
+        grid-template-columns: 40px 1fr auto;
+        gap: 10px;
+        padding: 14px;
+    }
+
+    .user-points {
+        font-size: 11px;
+    }
 }
+
 </style>
 </head>
 
@@ -1036,28 +1273,43 @@ footer {
 ====================================================== -->
 
 <header>
+
     <nav class="navbar">
 
         <div class="logo">
+
             <div class="logo-icon">🐾</div>
 
             <div class="logo-text">
-                <h1>Santa Cruz <span>Pet Watch</span></h1>
-                <small>Community Lost & Found Network</small>
+
+                <h1>
+                    Santa Cruz
+                    <span>Pet Watch</span>
+                </h1>
+
+                <small>
+                    Lost & Found Pet Network
+                </small>
+
             </div>
+
         </div>
 
         <div class="nav-links">
+
             <a href="#reports">Reports</a>
             <a href="#leaderboard">Leaderboard</a>
             <a href="#report">Report Pet</a>
+            <a href="#help">Help</a>
+
         </div>
 
         <div class="points-pill">
-            ⭐ 1,250 Paw Points
+            ⭐ <span id="pointsDisplay">1,250</span> Paw Points
         </div>
 
     </nav>
+
 </header>
 
 
@@ -1071,7 +1323,7 @@ footer {
 
         <div class="eyebrow">
             <span class="live-dot"></span>
-            SANTA CRUZ COMMUNITY • LIVE BOARD
+            SANTA CRUZ DE LA SIERRA • COMMUNITY BOARD
         </div>
 
         <h2>
@@ -1082,20 +1334,27 @@ footer {
         </h2>
 
         <p>
-            Santa Cruz Pet Watch connects people searching for their
-            lost pets with neighbors who can help. Find a report,
-            share a sighting, and earn Paw Points for helping the
-            community.
+            Report a lost or found pet, search community reports,
+            contact owners, share sightings, and help reunite pets
+            with their families.
         </p>
 
         <div class="hero-buttons">
-            <a href="#reports" class="btn btn-primary">
+
+            <a
+                href="#reports"
+                class="btn btn-primary"
+            >
                 🔎 Search Pet Reports
             </a>
 
-            <a href="#report" class="btn btn-secondary">
+            <a
+                href="#report"
+                class="btn btn-secondary"
+            >
                 🐾 Report a Pet
             </a>
+
         </div>
 
     </div>
@@ -1106,30 +1365,53 @@ footer {
         <div class="bounty-card">
 
             <div class="bounty-top">
-                <span class="bounty-label">⚡ ACTIVE BOUNTY</span>
-                <span class="reward">+150 PTS</span>
+
+                <span class="bounty-label">
+                    ⚡ COMMUNITY BOUNTY
+                </span>
+
+                <span class="reward">
+                    +150 PTS
+                </span>
+
             </div>
 
             <div class="preview-icon">
                 🐕
             </div>
 
-            <h3>Rumba</h3>
+            <h3>
+                Rumba
+            </h3>
 
             <p>
-                Dachshund • Urubo
+                Dachshund • Urubó
             </p>
 
             <div class="mini-stats">
 
                 <div class="mini-stat">
-                    <small>Status</small>
-                    <strong style="color:#ff5263">● LOST</strong>
+
+                    <small>
+                        Status
+                    </small>
+
+                    <strong style="color:#ff5263">
+                        ● LOST
+                    </strong>
+
                 </div>
 
                 <div class="mini-stat">
-                    <small>Posted</small>
-                    <strong>Aug 08</strong>
+
+                    <small>
+                        Reported
+                    </small>
+
+                    <strong>
+                        Aug 08, 2026
+                    </strong>
+
                 </div>
 
             </div>
@@ -1153,8 +1435,16 @@ footer {
     <div class="section-heading">
 
         <div>
-            <h2>Community Mission Control</h2>
-            <p>Every report increases the chance of bringing a pet home.</p>
+
+            <h2>
+                Community Mission Control
+            </h2>
+
+            <p>
+                Every report gives the community another chance
+                to bring a pet home.
+            </p>
+
         </div>
 
     </div>
@@ -1162,28 +1452,95 @@ footer {
 
     <div class="stats-grid">
 
-        <div class="stat-card" style="--accent:#ff5263">
-            <div class="stat-icon">🚨</div>
-            <div class="stat-number" id="lostCount">0</div>
-            <div class="stat-label">Active Lost Reports</div>
+        <div
+            class="stat-card"
+            style="--accent:#ff5263"
+        >
+
+            <div class="stat-icon">
+                🚨
+            </div>
+
+            <div
+                class="stat-number"
+                id="lostCount"
+            >
+                0
+            </div>
+
+            <div class="stat-label">
+                Active Lost Reports
+            </div>
+
         </div>
 
-        <div class="stat-card" style="--accent:#38e8a1">
-            <div class="stat-icon">🏠</div>
-            <div class="stat-number" id="foundCount">0</div>
-            <div class="stat-label">Found Pets</div>
+
+        <div
+            class="stat-card"
+            style="--accent:#38e8a1"
+        >
+
+            <div class="stat-icon">
+                🏠
+            </div>
+
+            <div
+                class="stat-number"
+                id="foundCount"
+            >
+                0
+            </div>
+
+            <div class="stat-label">
+                Found Pets
+            </div>
+
         </div>
 
-        <div class="stat-card" style="--accent:#ffc857">
-            <div class="stat-icon">⭐</div>
-            <div class="stat-number">2,450</div>
-            <div class="stat-label">Paw Points Earned</div>
+
+        <div
+            class="stat-card"
+            style="--accent:#ffc857"
+        >
+
+            <div class="stat-icon">
+                ⭐
+            </div>
+
+            <div
+                class="stat-number"
+                id="pointsEarned"
+            >
+                2,450
+            </div>
+
+            <div class="stat-label">
+                Paw Points Earned
+            </div>
+
         </div>
 
-        <div class="stat-card" style="--accent:#5b8cff">
-            <div class="stat-icon">🤝</div>
-            <div class="stat-number">128</div>
-            <div class="stat-label">Community Heroes</div>
+
+        <div
+            class="stat-card"
+            style="--accent:#5b8cff"
+        >
+
+            <div class="stat-icon">
+                🤝
+            </div>
+
+            <div
+                class="stat-number"
+                id="communityHeroes"
+            >
+                128
+            </div>
+
+            <div class="stat-label">
+                Community Heroes
+            </div>
+
         </div>
 
     </div>
@@ -1200,8 +1557,16 @@ footer {
     <div class="section-heading">
 
         <div>
-            <h2>🐾 Active Pet Bounties</h2>
-            <p>Browse the latest lost and found reports around Santa Cruz.</p>
+
+            <h2>
+                🐾 Pet Reports
+            </h2>
+
+            <p>
+                Search lost and found pet reports in
+                Santa Cruz de la Sierra.
+            </p>
+
         </div>
 
     </div>
@@ -1210,6 +1575,22 @@ footer {
     <div class="filter-box">
 
         <div class="filter-row">
+
+
+            <div class="filter-group">
+
+                <label for="searchFilter">
+                    Search
+                </label>
+
+                <input
+                    type="search"
+                    id="searchFilter"
+                    placeholder="Search by name, breed, area..."
+                >
+
+            </div>
+
 
             <div class="filter-group">
 
@@ -1229,6 +1610,10 @@ footer {
 
                     <option value="Found">
                         🟢 Found
+                    </option>
+
+                    <option value="Reunited">
+                        🔵 Reunited
                     </option>
 
                 </select>
@@ -1252,7 +1637,7 @@ footer {
                         Equipetrol
                     </option>
 
-                    <option value="Urubo">
+                    <option value="Urubó">
                         Urubó
                     </option>
 
@@ -1264,22 +1649,89 @@ footer {
                         Plan 3000
                     </option>
 
+                    <option value="Other">
+                        Other
+                    </option>
+
                 </select>
 
             </div>
 
 
-            <button class="reset-btn" id="resetFilters">
-                ↻ Reset Filters
+            <button
+                class="reset-btn"
+                id="resetFilters"
+                type="button"
+            >
+                ↻ Reset
             </button>
+
+        </div>
+
+
+        <div
+            class="filter-row"
+            style="margin-top:12px; grid-template-columns:1fr 1fr auto auto;"
+        >
+
+            <div class="filter-group">
+
+                <label for="sortFilter">
+                    Sort
+                </label>
+
+                <select id="sortFilter">
+
+                    <option value="newest">
+                        Newest first
+                    </option>
+
+                    <option value="oldest">
+                        Oldest first
+                    </option>
+
+                    <option value="points">
+                        Highest reward
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="filter-group">
+
+                <label for="mineFilter">
+                    My Reports
+                </label>
+
+                <select id="mineFilter">
+
+                    <option value="all">
+                        All Reports
+                    </option>
+
+                    <option value="mine">
+                        Only My Reports
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div></div>
+            <div></div>
 
         </div>
 
     </div>
 
 
-    <div class="pet-grid" id="petGrid">
-        <!-- JavaScript inserts reports here -->
+    <div
+        class="pet-grid"
+        id="petGrid"
+    >
+        <!-- JavaScript inserts reports -->
     </div>
 
 </section>
@@ -1289,13 +1741,23 @@ footer {
      LEADERBOARD
 ====================================================== -->
 
-<section class="leaderboard-section" id="leaderboard">
+<section
+    class="leaderboard-section"
+    id="leaderboard"
+>
 
     <div class="section-heading">
 
         <div>
-            <h2>🏆 Paw Point Champions</h2>
-            <p>Neighbors making the biggest difference.</p>
+
+            <h2>
+                🏆 Paw Point Champions
+            </h2>
+
+            <p>
+                Helping neighbors and pets makes you a hero.
+            </p>
+
         </div>
 
     </div>
@@ -1307,11 +1769,20 @@ footer {
 
             <div class="leader-row">
 
-                <div class="rank gold">1</div>
+                <div class="rank gold">
+                    1
+                </div>
 
                 <div>
-                    <div class="user-name">🐕 Diego R.</div>
-                    <div class="user-title">Ultimate Pet Hero</div>
+
+                    <div class="user-name">
+                        🐕 Diego R.
+                    </div>
+
+                    <div class="user-title">
+                        Ultimate Pet Hero
+                    </div>
+
                 </div>
 
                 <div class="user-points">
@@ -1323,11 +1794,20 @@ footer {
 
             <div class="leader-row">
 
-                <div class="rank silver">2</div>
+                <div class="rank silver">
+                    2
+                </div>
 
                 <div>
-                    <div class="user-name">🐾 Camila M.</div>
-                    <div class="user-title">Neighborhood Guardian</div>
+
+                    <div class="user-name">
+                        🐾 Camila M.
+                    </div>
+
+                    <div class="user-title">
+                        Neighborhood Guardian
+                    </div>
+
                 </div>
 
                 <div class="user-points">
@@ -1339,11 +1819,20 @@ footer {
 
             <div class="leader-row">
 
-                <div class="rank bronze">3</div>
+                <div class="rank bronze">
+                    3
+                </div>
 
                 <div>
-                    <div class="user-name">🦴 Mateo S.</div>
-                    <div class="user-title">Pet Tracker</div>
+
+                    <div class="user-name">
+                        🦴 Mateo S.
+                    </div>
+
+                    <div class="user-title">
+                        Pet Tracker
+                    </div>
+
                 </div>
 
                 <div class="user-points">
@@ -1355,11 +1844,20 @@ footer {
 
             <div class="leader-row">
 
-                <div class="rank">4</div>
+                <div class="rank">
+                    4
+                </div>
 
                 <div>
-                    <div class="user-name">🐈 Sofia V.</div>
-                    <div class="user-title">Community Scout</div>
+
+                    <div class="user-name">
+                        🐈 Sofia V.
+                    </div>
+
+                    <div class="user-title">
+                        Community Scout
+                    </div>
+
                 </div>
 
                 <div class="user-points">
@@ -1371,11 +1869,20 @@ footer {
 
             <div class="leader-row">
 
-                <div class="rank">5</div>
+                <div class="rank">
+                    5
+                </div>
 
                 <div>
-                    <div class="user-name">🐕 Lucas A.</div>
-                    <div class="user-title">Helpful Neighbor</div>
+
+                    <div class="user-name">
+                        🐕 Lucas A.
+                    </div>
+
+                    <div class="user-title">
+                        Helpful Neighbor
+                    </div>
+
                 </div>
 
                 <div class="user-points">
@@ -1393,20 +1900,34 @@ footer {
                 🏅
             </div>
 
-            <h3>Your Hero Level</h3>
+            <h3>
+                Your Hero Level
+            </h3>
 
             <p>
-                Keep helping your community to unlock new
-                Paw Point ranks and badges.
+                Help identify, share, locate, or reunite pets
+                to earn Paw Points.
             </p>
 
             <div class="progress">
-                <div class="progress-bar"></div>
+
+                <div
+                    class="progress-bar"
+                    id="progressBar"
+                ></div>
+
             </div>
 
             <div class="level-bottom">
-                <span>Level 4</span>
-                <span>1,250 / 1,500</span>
+
+                <span id="levelText">
+                    Level 4
+                </span>
+
+                <span id="levelPoints">
+                    1,250 / 1,500
+                </span>
+
             </div>
 
         </div>
@@ -1420,13 +1941,23 @@ footer {
      REPORT FORM
 ====================================================== -->
 
-<section class="report-section" id="report">
+<section
+    class="report-section"
+    id="report"
+>
 
     <div class="section-heading">
 
         <div>
-            <h2>📢 Create a Pet Report</h2>
-            <p>Help the community get another pet home.</p>
+
+            <h2>
+                📢 Create a Pet Report
+            </h2>
+
+            <p>
+                Your report will be saved on this device.
+            </p>
+
         </div>
 
     </div>
@@ -1441,21 +1972,25 @@ footer {
                 🐾
             </div>
 
-            <h2>Put out the call.</h2>
+            <h2>
+                Put out the call.
+            </h2>
 
             <p>
-                Whether you've lost your pet or found one,
-                creating a report lets other Santa Cruz residents
-                know where help is needed.
+                Lost a pet or found one? Create a report and
+                let neighbors know where help is needed.
             </p>
 
             <div class="reward-box">
 
-                <strong>⭐ Paw Points</strong>
+                <strong>
+                    ⭐ Paw Points
+                </strong>
 
                 <p>
-                    Community members can earn points by
-                    helping identify, locate, or reunite pets.
+                    Lost reports receive a higher suggested
+                    reward because they usually need urgent
+                    community attention.
                 </p>
 
             </div>
@@ -1463,7 +1998,10 @@ footer {
         </div>
 
 
-        <form class="report-form" id="reportForm">
+        <form
+            class="report-form"
+            id="reportForm"
+        >
 
             <div class="form-grid">
 
@@ -1474,7 +2012,10 @@ footer {
                         Status *
                     </label>
 
-                    <select id="reportStatus" required>
+                    <select
+                        id="reportStatus"
+                        required
+                    >
 
                         <option value="">
                             Select status
@@ -1503,7 +2044,56 @@ footer {
                         type="text"
                         id="petName"
                         placeholder="e.g. Max"
+                        maxlength="40"
                         required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="species">
+                        Species *
+                    </label>
+
+                    <select
+                        id="species"
+                        required
+                    >
+
+                        <option value="">
+                            Select species
+                        </option>
+
+                        <option value="Dog">
+                            🐕 Dog
+                        </option>
+
+                        <option value="Cat">
+                            🐈 Cat
+                        </option>
+
+                        <option value="Other">
+                            🐾 Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="breed">
+                        Breed / Description
+                    </label>
+
+                    <input
+                        type="text"
+                        id="breed"
+                        placeholder="e.g. Golden Retriever"
+                        maxlength="60"
                     >
 
                 </div>
@@ -1515,17 +2105,20 @@ footer {
                         Area *
                     </label>
 
-                    <select id="area" required>
+                    <select
+                        id="area"
+                        required
+                    >
 
                         <option value="">
-                            Select neighborhood
+                            Select area
                         </option>
 
                         <option value="Equipetrol">
                             Equipetrol
                         </option>
 
-                        <option value="Urubo">
+                        <option value="Urubó">
                             Urubó
                         </option>
 
@@ -1535,6 +2128,10 @@ footer {
 
                         <option value="Plan 3000">
                             Plan 3000
+                        </option>
+
+                        <option value="Other">
+                            Other
                         </option>
 
                     </select>
@@ -1552,6 +2149,7 @@ footer {
                         type="text"
                         id="contact"
                         placeholder="Phone or email"
+                        maxlength="100"
                         required
                     >
 
@@ -1561,14 +2159,13 @@ footer {
                 <div class="form-group full">
 
                     <label for="imageUrl">
-                        Image URL *
+                        Image URL
                     </label>
 
                     <input
                         type="url"
                         id="imageUrl"
                         placeholder="https://example.com/pet.jpg"
-                        required
                     >
 
                 </div>
@@ -1582,7 +2179,8 @@ footer {
 
                     <textarea
                         id="description"
-                        placeholder="Describe the pet, where it was last seen, collar, markings, etc."
+                        placeholder="Describe the pet, markings, collar, where it was last seen/found, etc."
+                        maxlength="600"
                         required
                     ></textarea>
 
@@ -1592,12 +2190,18 @@ footer {
 
 
             <div class="form-note">
-                * Required fields. This demo validates the form
-                but does not submit reports to a database.
+
+                Reports are stored locally in this browser.
+                A real multi-user version would need a database
+                such as Firebase or Supabase.
+
             </div>
 
 
-            <button class="submit-btn" type="submit">
+            <button
+                class="submit-btn"
+                type="submit"
+            >
                 🐾 Publish Pet Report
             </button>
 
@@ -1606,6 +2210,108 @@ footer {
     </div>
 
 </section>
+
+
+<!-- ======================================================
+     OFFICIAL / COMMUNITY HELP
+====================================================== -->
+
+<section
+    class="help-section"
+    id="help"
+>
+
+    <div class="section-heading">
+
+        <div>
+
+            <h2>
+                🆘 Need Extra Help?
+            </h2>
+
+            <p>
+                Official municipal resources for Santa Cruz de la Sierra.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="help-grid">
+
+
+        <div class="help-card">
+
+            <div class="help-icon">
+                🏛️
+            </div>
+
+            <h3>
+                Municipal Call Center
+            </h3>
+
+            <p>
+                The Santa Cruz de la Sierra municipal government
+                lists 800 12 5700 as its municipal call center.
+            </p>
+
+            <a href="tel:800125700">
+                📞 Call 800 12 5700
+            </a>
+
+        </div>
+
+
+        <div class="help-card">
+
+            <div class="help-icon">
+                🐕
+            </div>
+
+            <h3>
+                CEMZOOCRUZ
+            </h3>
+
+            <p>
+                The municipal phone directory lists the
+                Centro de Albergue Temporal para Canes y Felinos
+                as CEMZOOCRUZ.
+            </p>
+
+            <a href="tel:3475779">
+                📞 Call 3475779
+            </a>
+
+        </div>
+
+
+        <div class="help-card">
+
+            <div class="help-icon">
+                🚨
+            </div>
+
+            <h3>
+                Animal Emergency
+            </h3>
+
+            <p>
+                If an animal is injured or in immediate danger,
+                avoid putting yourself at risk and contact
+                appropriate emergency or municipal services.
+            </p>
+
+            <a href="tel:800125050">
+                📞 Municipal Emergency
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
 
 </main>
 
@@ -1619,12 +2325,19 @@ footer {
     <div class="footer-inner">
 
         <div>
-            <strong>Santa Cruz Pet Watch</strong>
+
+            <strong>
+                Santa Cruz Pet Watch
+            </strong>
+
             — Community-powered pet recovery.
+
         </div>
 
         <div>
+
             Built for Santa Cruz International School • 2026
+
         </div>
 
     </div>
@@ -1632,319 +2345,1206 @@ footer {
 </footer>
 
 
-<!-- TOAST -->
+<!-- ======================================================
+     TOAST
+====================================================== -->
 
-<div class="toast" id="toast">
-    <strong>✓ Report Ready!</strong>
+<div
+    class="toast"
+    id="toast"
+>
+
+    <strong id="toastTitle">
+        ✓ Done!
+    </strong>
+
     <br>
-    Your form passed validation. In the full version,
-    this would be sent to the database.
+
+    <span id="toastMessage">
+        Action completed.
+    </span>
+
+</div>
+
+
+<!-- ======================================================
+     MODAL
+====================================================== -->
+
+<div
+    class="modal-overlay"
+    id="modalOverlay"
+>
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <h3>
+                Pet Report
+            </h3>
+
+            <button
+                class="close-modal"
+                id="closeModal"
+                type="button"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div
+            class="modal-body"
+            id="modalBody"
+        >
+        </div>
+
+    </div>
+
 </div>
 
 
 <script>
 
 /* =========================================================
-   REQUIRED CLIENT DATA
+   STORAGE KEYS
 ========================================================= */
 
-const pets = [
+const PET_STORAGE_KEY = "sc_pet_watch_reports_v2";
+const POINTS_STORAGE_KEY = "sc_pet_watch_points_v2";
+const HEROES_STORAGE_KEY = "sc_pet_watch_heroes_v2";
+
+
+/* =========================================================
+   DEFAULT REPORTS
+========================================================= */
+
+const defaultPets = [
+
     {
-        "id": "lf001",
-        "status": "Lost",
-        "name": "Rumba",
-        "species": "Dog",
-        "breed": "Dachshund",
-        "area": "Urubo",
-        "date": "2026-08-08",
-        "image": "https://placedog.net/500/500?id=12",
-        "contact": "777-12345",
-        "description": "Female dachshund, very friendly but might be scared. Wearing a red collar."
+        id: "lf001",
+        status: "Lost",
+        name: "Rumba",
+        species: "Dog",
+        breed: "Dachshund",
+        area: "Urubó",
+        date: "2026-08-08",
+        image: "https://placedog.net/500/500?id=12",
+        contact: "777-12345",
+        description:
+            "Female dachshund, very friendly but might be scared. Wearing a red collar.",
+        ownerCreated: false
     },
+
     {
-        "id": "lf002",
-        "status": "Found",
-        "name": "Unknown",
-        "species": "Cat",
-        "breed": "Domestic Shorthair",
-        "area": "Equipetrol",
-        "date": "2026-08-09",
-        "image": "https://placekitten.com/500/500",
-        "contact": "777-98765",
-        "description": "Found hiding under a car near the Ventura Mall. Very vocal, no collar."
+        id: "lf002",
+        status: "Found",
+        name: "Unknown",
+        species: "Cat",
+        breed: "Domestic Shorthair",
+        area: "Equipetrol",
+        date: "2026-08-09",
+        image: "https://placekitten.com/500/500",
+        contact: "777-98765",
+        description:
+            "Found hiding under a car near Ventura Mall. Very vocal and no collar was visible.",
+        ownerCreated: false
     },
+
     {
-        "id": "lf003",
-        "status": "Lost",
-        "name": "Max",
-        "species": "Dog",
-        "breed": "Golden Retriever",
-        "area": "Sirari",
-        "date": "2026-08-05",
-        "image": "https://placedog.net/500/500?id=43",
-        "contact": "777-55555",
-        "description": "Large male Golden, microchipped. Wandered off during the storm."
+        id: "lf003",
+        status: "Lost",
+        name: "Max",
+        species: "Dog",
+        breed: "Golden Retriever",
+        area: "Sirari",
+        date: "2026-08-05",
+        image: "https://placedog.net/500/500?id=43",
+        contact: "777-55555",
+        description:
+            "Large male Golden Retriever. Microchipped. Wandered off during the storm.",
+        ownerCreated: false
     }
+
 ];
 
 
 /* =========================================================
-   DOM ELEMENTS
+   LOAD DATA
 ========================================================= */
 
-const petGrid = document.getElementById("petGrid");
-const statusFilter = document.getElementById("statusFilter");
-const areaFilter = document.getElementById("areaFilter");
-const resetFilters = document.getElementById("resetFilters");
+function loadPets() {
 
-const lostCount = document.getElementById("lostCount");
-const foundCount = document.getElementById("foundCount");
+    try {
 
-const reportForm = document.getElementById("reportForm");
-const toast = document.getElementById("toast");
+        const saved = localStorage.getItem(
+            PET_STORAGE_KEY
+        );
+
+        if (saved) {
+
+            const parsed = JSON.parse(saved);
+
+            if (Array.isArray(parsed)) {
+                return parsed;
+            }
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Could not load saved reports:",
+            error
+        );
+
+    }
+
+    return defaultPets;
+
+}
+
+
+let pets = loadPets();
 
 
 /* =========================================================
-   PAW POINT CALCULATION
+   POINTS
 ========================================================= */
 
-function calculatePoints(pet) {
+let userPoints = Number(
+    localStorage.getItem(POINTS_STORAGE_KEY)
+) || 1250;
 
-    let points = 100;
 
-    if (pet.status === "Lost") {
-        points = 150;
-    }
+/* =========================================================
+   DOM
+========================================================= */
 
-    if (pet.status === "Found") {
-        points = 125;
-    }
+const petGrid =
+    document.getElementById("petGrid");
 
-    if (pet.species === "Dog") {
-        points += 25;
-    }
+const statusFilter =
+    document.getElementById("statusFilter");
 
-    return points;
+const areaFilter =
+    document.getElementById("areaFilter");
+
+const searchFilter =
+    document.getElementById("searchFilter");
+
+const sortFilter =
+    document.getElementById("sortFilter");
+
+const mineFilter =
+    document.getElementById("mineFilter");
+
+const resetFilters =
+    document.getElementById("resetFilters");
+
+const lostCount =
+    document.getElementById("lostCount");
+
+const foundCount =
+    document.getElementById("foundCount");
+
+const pointsEarned =
+    document.getElementById("pointsEarned");
+
+const pointsDisplay =
+    document.getElementById("pointsDisplay");
+
+const communityHeroes =
+    document.getElementById("communityHeroes");
+
+const progressBar =
+    document.getElementById("progressBar");
+
+const levelText =
+    document.getElementById("levelText");
+
+const levelPoints =
+    document.getElementById("levelPoints");
+
+const reportForm =
+    document.getElementById("reportForm");
+
+const toast =
+    document.getElementById("toast");
+
+const toastTitle =
+    document.getElementById("toastTitle");
+
+const toastMessage =
+    document.getElementById("toastMessage");
+
+const modalOverlay =
+    document.getElementById("modalOverlay");
+
+const modalBody =
+    document.getElementById("modalBody");
+
+const closeModal =
+    document.getElementById("closeModal");
+
+
+/* =========================================================
+   SAVE
+========================================================= */
+
+function savePets() {
+
+    localStorage.setItem(
+        PET_STORAGE_KEY,
+        JSON.stringify(pets)
+    );
+
+}
+
+
+function savePoints() {
+
+    localStorage.setItem(
+        POINTS_STORAGE_KEY,
+        String(userPoints)
+    );
+
 }
 
 
 /* =========================================================
-   RENDER PET CARDS
+   SANITIZE HTML
 ========================================================= */
 
-function renderPets(data) {
+function escapeHTML(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* =========================================================
+   POINT CALCULATION
+========================================================= */
+
+function calculatePoints(pet) {
+
+    if (pet.status === "Lost") {
+        return 150;
+    }
+
+    if (pet.status === "Found") {
+        return 125;
+    }
+
+    return 100;
+
+}
+
+
+/* =========================================================
+   STATUS HELPERS
+========================================================= */
+
+function getStatusClass(status) {
+
+    if (status === "Lost") {
+        return "status-lost";
+    }
+
+    if (status === "Found") {
+        return "status-found";
+    }
+
+    return "status-reunited";
+
+}
+
+
+function getStatusIcon(status) {
+
+    if (status === "Lost") {
+        return "🚨";
+    }
+
+    if (status === "Found") {
+        return "🏠";
+    }
+
+    return "💙";
+
+}
+
+
+/* =========================================================
+   DATE
+========================================================= */
+
+function formatDate(dateString) {
+
+    const date = new Date(
+        dateString + "T12:00:00"
+    );
+
+    if (Number.isNaN(date.getTime())) {
+        return "Unknown date";
+    }
+
+    return date.toLocaleDateString(
+        "en-US",
+        {
+            month: "short",
+            day: "numeric",
+            year: "numeric"
+        }
+    );
+
+}
+
+
+/* =========================================================
+   FILTER
+========================================================= */
+
+function getFilteredPets() {
+
+    const selectedStatus =
+        statusFilter.value;
+
+    const selectedArea =
+        areaFilter.value;
+
+    const search =
+        searchFilter.value
+            .trim()
+            .toLowerCase();
+
+    const mine =
+        mineFilter.value;
+
+
+    let filtered = pets.filter(
+        pet => {
+
+            const statusMatches =
+                selectedStatus === "All" ||
+                pet.status === selectedStatus;
+
+
+            const areaMatches =
+                selectedArea === "All" ||
+                pet.area === selectedArea;
+
+
+            const searchText = [
+                pet.name,
+                pet.species,
+                pet.breed,
+                pet.area,
+                pet.description
+            ]
+                .join(" ")
+                .toLowerCase();
+
+
+            const searchMatches =
+                !search ||
+                searchText.includes(search);
+
+
+            const mineMatches =
+                mine === "all" ||
+                pet.ownerCreated === true;
+
+
+            return (
+                statusMatches &&
+                areaMatches &&
+                searchMatches &&
+                mineMatches
+            );
+
+        }
+    );
+
+
+    if (sortFilter.value === "oldest") {
+
+        filtered.sort(
+            (a,b) =>
+                new Date(a.date) -
+                new Date(b.date)
+        );
+
+    }
+
+
+    if (sortFilter.value === "newest") {
+
+        filtered.sort(
+            (a,b) =>
+                new Date(b.date) -
+                new Date(a.date)
+        );
+
+    }
+
+
+    if (sortFilter.value === "points") {
+
+        filtered.sort(
+            (a,b) =>
+                calculatePoints(b) -
+                calculatePoints(a)
+        );
+
+    }
+
+
+    return filtered;
+
+}
+
+
+/* =========================================================
+   RENDER
+========================================================= */
+
+function renderPets() {
+
+    const data =
+        getFilteredPets();
+
 
     petGrid.innerHTML = "";
+
 
     if (data.length === 0) {
 
         petGrid.innerHTML = `
+
             <div class="empty">
 
-                <div class="empty-icon">🔎</div>
+                <div class="empty-icon">
+                    🔎
+                </div>
 
-                <h3>No reports found</h3>
+                <h3>
+                    No reports found
+                </h3>
 
                 <p>
-                    Try changing your filters to find more pets.
+                    Try changing your search or filters.
                 </p>
 
             </div>
+
         `;
 
         return;
+
     }
 
 
-    data.forEach(pet => {
+    data.forEach(
+        pet => {
 
-        const points = calculatePoints(pet);
+            const points =
+                calculatePoints(pet);
 
-        const statusClass =
-            pet.status === "Lost"
-                ? "status-lost"
-                : "status-found";
+            const statusClass =
+                getStatusClass(
+                    pet.status
+                );
 
-
-        const statusIcon =
-            pet.status === "Lost"
-                ? "🚨"
-                : "🏠";
-
-
-        const card = document.createElement("article");
-
-        card.className = "pet-card";
+            const statusIcon =
+                getStatusIcon(
+                    pet.status
+                );
 
 
-        card.innerHTML = `
+            const card =
+                document.createElement(
+                    "article"
+                );
 
-            <div class="pet-image-wrap">
-
-                <img
-                    class="pet-image"
-                    src="${pet.image}"
-                    alt="${pet.name} - ${pet.status} pet report"
-                    onerror="this.src='https://placehold.co/500x500/111827/ffffff?text=🐾+Pet'"
-                >
-
-                <span class="status-badge ${statusClass}">
-                    ${statusIcon} ${pet.status.toUpperCase()}
-                </span>
-
-                <span class="points-badge">
-                    ⭐ +${points} PTS
-                </span>
-
-            </div>
+            card.className =
+                "pet-card";
 
 
-            <div class="pet-info">
+            card.innerHTML = `
 
-                <div class="pet-title">
+                <div class="pet-image-wrap">
 
-                    <div>
+                    <img
+                        class="pet-image"
+                        src="${escapeHTML(pet.image || fallbackImage())}"
+                        alt="${escapeHTML(pet.name)} - ${escapeHTML(pet.status)} pet report"
+                        onerror="this.src='${fallbackImage()}'"
+                    >
 
-                        <h3>${pet.name}</h3>
+                    <span class="status-badge ${statusClass}">
+                        ${statusIcon}
+                        ${escapeHTML(pet.status).toUpperCase()}
+                    </span>
 
-                        <div class="pet-type">
-                            ${pet.species} • ${pet.breed}
+                    <span class="points-badge">
+                        ⭐ +${points} PTS
+                    </span>
+
+                </div>
+
+
+                <div class="pet-info">
+
+                    <div class="pet-title">
+
+                        <div>
+
+                            <h3>
+                                ${escapeHTML(pet.name)}
+                            </h3>
+
+                            <div class="pet-type">
+                                ${escapeHTML(pet.species)}
+                                •
+                                ${escapeHTML(pet.breed || "Breed unknown")}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="pet-details">
+
+                        <div class="detail">
+
+                            <span>
+                                📍 AREA
+                            </span>
+
+                            <strong>
+                                ${escapeHTML(pet.area)}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="detail">
+
+                            <span>
+                                📅 REPORTED
+                            </span>
+
+                            <strong>
+                                ${formatDate(pet.date)}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <p class="description">
+                        ${escapeHTML(pet.description)}
+                    </p>
+
+
+                    <div class="contact">
+
+                        <span class="contact-number">
+                            📞 ${escapeHTML(pet.contact)}
+                        </span>
+
+
+                        <div class="card-actions">
+
+                            <button
+                                class="action-btn"
+                                onclick="viewPet('${pet.id}')"
+                            >
+                                👁 Details
+                            </button>
+
+                            <button
+                                class="action-btn help"
+                                onclick="contactPet('${pet.id}')"
+                            >
+                                💬 Contact
+                            </button>
+
+                            <button
+                                class="action-btn share"
+                                onclick="sharePet('${pet.id}')"
+                            >
+                                📤 Share
+                            </button>
+
+                            ${
+                                pet.status !== "Reunited"
+                                ?
+                                `
+                                <button
+                                    class="action-btn reunite"
+                                    onclick="reunitePet('${pet.id}')"
+                                >
+                                    💙 Reunited
+                                </button>
+                                `
+                                :
+                                `
+                                <button
+                                    class="action-btn"
+                                    onclick="copyReport('${pet.id}')"
+                                >
+                                    🔗 Copy Link
+                                </button>
+                                `
+                            }
+
+                            ${
+                                pet.ownerCreated
+                                ?
+                                `
+                                <button
+                                    class="action-btn delete"
+                                    onclick="deletePet('${pet.id}')"
+                                >
+                                    🗑 Delete
+                                </button>
+                                `
+                                :
+                                ""
+                            }
+
                         </div>
 
                     </div>
 
                 </div>
 
-
-                <div class="pet-details">
-
-                    <div class="detail">
-
-                        <span>📍 AREA</span>
-
-                        <strong>
-                            ${pet.area}
-                        </strong>
-
-                    </div>
+            `;
 
 
-                    <div class="detail">
+            petGrid.appendChild(card);
 
-                        <span>📅 REPORTED</span>
-
-                        <strong>
-                            ${formatDate(pet.date)}
-                        </strong>
-
-                    </div>
-
-                </div>
-
-
-                <p class="description">
-                    ${pet.description}
-                </p>
-
-
-                <div class="contact">
-
-                    <span class="contact-number">
-                        📞 ${pet.contact}
-                    </span>
-
-                    <span class="help-btn">
-                        🐾 HELP
-                    </span>
-
-                </div>
-
-            </div>
-        `;
-
-
-        petGrid.appendChild(card);
-
-    });
+        }
+    );
 
 }
 
 
 /* =========================================================
-   DATE FORMAT
+   FALLBACK IMAGE
 ========================================================= */
 
-function formatDate(dateString) {
+function fallbackImage() {
 
-    const date = new Date(dateString + "T12:00:00");
-
-    return date.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric"
-    });
+    return "https://placehold.co/800x600/111827/ffffff?text=🐾+Pet";
 
 }
 
 
 /* =========================================================
-   FILTERING
+   CONTACT PET
 ========================================================= */
 
-function filterPets() {
+function contactPet(id) {
 
-    const selectedStatus = statusFilter.value;
-    const selectedArea = areaFilter.value;
-
-
-    const filteredPets = pets.filter(pet => {
-
-        const statusMatches =
-            selectedStatus === "All" ||
-            pet.status === selectedStatus;
+    const pet =
+        pets.find(
+            item => item.id === id
+        );
 
 
-        const areaMatches =
-            selectedArea === "All" ||
-            pet.area === selectedArea;
+    if (!pet) {
+        return;
+    }
 
 
-        return statusMatches && areaMatches;
+    const cleanPhone =
+        String(pet.contact)
+            .replace(/[^\d+]/g, "");
 
-    });
+
+    const message =
+        `Hello! I saw the ${pet.status.toLowerCase()} pet report for ${pet.name} on Santa Cruz Pet Watch. I may have information that can help.`;
+
+    
+    if (
+        cleanPhone.length >= 7 &&
+        !pet.contact.includes("@")
+    ) {
+
+        const whatsappNumber =
+            cleanPhone.replace(
+                /^\+/,
+                ""
+            );
 
 
-    renderPets(filteredPets);
+        window.open(
+            `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`,
+            "_blank"
+        );
+
+        return;
+
+    }
+
+
+    if (
+        pet.contact.includes("@")
+    ) {
+
+        window.location.href =
+            `mailto:${pet.contact}?subject=${encodeURIComponent(
+                "Pet report: " + pet.name
+            )}&body=${encodeURIComponent(message)}`;
+
+        return;
+
+    }
+
+
+    showToast(
+        "📞 Contact",
+        `Please contact the reporter at ${pet.contact}.`
+    );
 
 }
 
 
 /* =========================================================
-   FILTER EVENTS
+   VIEW PET
 ========================================================= */
 
-statusFilter.addEventListener(
-    "change",
-    filterPets
-);
+function viewPet(id) {
 
-areaFilter.addEventListener(
-    "change",
-    filterPets
-);
+    const pet =
+        pets.find(
+            item => item.id === id
+        );
 
 
-resetFilters.addEventListener(
+    if (!pet) {
+        return;
+    }
+
+
+    const points =
+        calculatePoints(pet);
+
+
+    modalBody.innerHTML = `
+
+        <img
+            class="modal-image"
+            src="${escapeHTML(pet.image || fallbackImage())}"
+            onerror="this.src='${fallbackImage()}'"
+            alt="${escapeHTML(pet.name)}"
+        >
+
+
+        <span
+            class="modal-status ${getStatusClass(pet.status)}"
+        >
+            ${getStatusIcon(pet.status)}
+            ${escapeHTML(pet.status).toUpperCase()}
+        </span>
+
+
+        <h2>
+            ${escapeHTML(pet.name)}
+        </h2>
+
+
+        <div class="modal-muted">
+
+            ${escapeHTML(pet.species)}
+            •
+            ${escapeHTML(pet.breed || "Breed unknown")}
+            •
+            ${escapeHTML(pet.area)}
+
+        </div>
+
+
+        <p class="modal-description">
+
+            <strong>
+                Reported:
+            </strong>
+
+            ${formatDate(pet.date)}
+
+            <br><br>
+
+            ${escapeHTML(pet.description)}
+
+        </p>
+
+
+        <p
+            class="modal-description"
+            style="color:var(--yellow)"
+        >
+
+            ⭐ Community reward:
+            ${points} Paw Points
+
+        </p>
+
+
+        <div class="modal-actions">
+
+            <button
+                onclick="contactPet('${pet.id}'); closePetModal();"
+            >
+                💬 Contact Reporter
+            </button>
+
+            <button
+                onclick="sharePet('${pet.id}'); closePetModal();"
+            >
+                📤 Share Report
+            </button>
+
+            ${
+                pet.status !== "Reunited"
+                ?
+                `
+                <button
+                    onclick="reunitePet('${pet.id}'); closePetModal();"
+                >
+                    💙 Mark Reunited
+                </button>
+                `
+                :
+                ""
+            }
+
+            <button
+                onclick="copyReport('${pet.id}')"
+            >
+                🔗 Copy Report
+            </button>
+
+        </div>
+
+    `;
+
+
+    modalOverlay.classList.add(
+        "show"
+    );
+
+}
+
+
+function closePetModal() {
+
+    modalOverlay.classList.remove(
+        "show"
+    );
+
+}
+
+
+closeModal.addEventListener(
     "click",
-    () => {
+    closePetModal
+);
 
-        statusFilter.value = "All";
-        areaFilter.value = "All";
 
-        renderPets(pets);
+modalOverlay.addEventListener(
+    "click",
+    event => {
+
+        if (
+            event.target === modalOverlay
+        ) {
+
+            closePetModal();
+
+        }
 
     }
 );
+
+
+/* =========================================================
+   SHARE
+========================================================= */
+
+async function sharePet(id) {
+
+    const pet =
+        pets.find(
+            item => item.id === id
+        );
+
+
+    if (!pet) {
+        return;
+    }
+
+
+    const text =
+        `🐾 ${pet.status} pet report: ${pet.name}
+📍 ${pet.area}
+🐕 ${pet.species} • ${pet.breed || "Unknown breed"}
+
+${pet.description}
+
+Santa Cruz Pet Watch`;
+
+
+    if (
+        navigator.share
+    ) {
+
+        try {
+
+            await navigator.share({
+
+                title:
+                    `${pet.status}: ${pet.name}`,
+
+                text:
+                    text,
+
+                url:
+                    window.location.href
+
+            });
+
+
+            showToast(
+                "✓ Shared",
+                "The report was shared successfully."
+            );
+
+
+            return;
+
+        } catch (error) {
+
+            if (
+                error.name === "AbortError"
+            ) {
+
+                return;
+
+            }
+
+        }
+
+    }
+
+
+    try {
+
+        await navigator.clipboard.writeText(
+            text
+        );
+
+        showToast(
+            "✓ Copied",
+            "The report text was copied. You can paste it into WhatsApp or social media."
+        );
+
+    } catch (error) {
+
+        showToast(
+            "Share",
+            "Copy the report details from the Details button."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   COPY REPORT
+========================================================= */
+
+async function copyReport(id) {
+
+    const pet =
+        pets.find(
+            item => item.id === id
+        );
+
+
+    if (!pet) {
+        return;
+    }
+
+
+    const text =
+        `🐾 ${pet.status.toUpperCase()} PET REPORT
+
+Name: ${pet.name}
+Species: ${pet.species}
+Breed: ${pet.breed || "Unknown"}
+Area: ${pet.area}
+Reported: ${formatDate(pet.date)}
+Contact: ${pet.contact}
+
+${pet.description}
+
+Santa Cruz Pet Watch`;
+
+
+    try {
+
+        await navigator.clipboard.writeText(
+            text
+        );
+
+
+        showToast(
+            "✓ Copied",
+            "The complete report has been copied."
+        );
+
+    } catch (error) {
+
+        showToast(
+            "Copy unavailable",
+            "Your browser blocked clipboard access."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   REUNITE PET
+========================================================= */
+
+function reunitePet(id) {
+
+    const pet =
+        pets.find(
+            item => item.id === id
+        );
+
+
+    if (!pet) {
+        return;
+    }
+
+
+    if (
+        !confirm(
+            `Mark ${pet.name} as reunited with their family?`
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    pet.status =
+        "Reunited";
+
+
+    pet.reunitedAt =
+        new Date()
+            .toISOString()
+            .split("T")[0];
+
+
+    userPoints += 50;
+
+
+    savePets();
+    savePoints();
+
+    renderPets();
+    updateStats();
+    updateHeroLevel();
+
+
+    showToast(
+        "💙 Pet Reunited!",
+        `${pet.name} has been marked as reunited. You earned 50 Paw Points.`
+    );
+
+}
+
+
+/* =========================================================
+   DELETE PET
+========================================================= */
+
+function deletePet(id) {
+
+    const pet =
+        pets.find(
+            item => item.id === id
+        );
+
+
+    if (!pet) {
+        return;
+    }
+
+
+    if (!pet.ownerCreated) {
+
+        showToast(
+            "Not available",
+            "Only reports created on this browser can be removed."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !confirm(
+            `Delete the report for ${pet.name}? This cannot be undone.`
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    pets =
+        pets.filter(
+            item => item.id !== id
+        );
+
+
+    savePets();
+
+    renderPets();
+
+    updateStats();
+
+
+    showToast(
+        "🗑 Report Removed",
+        "Your report was removed from this browser."
+    );
+
+}
 
 
 /* =========================================================
@@ -1953,24 +3553,161 @@ resetFilters.addEventListener(
 
 function updateStats() {
 
-    const lost = pets.filter(
-        pet => pet.status === "Lost"
-    ).length;
+    const lost =
+        pets.filter(
+            pet => pet.status === "Lost"
+        ).length;
 
 
-    const found = pets.filter(
-        pet => pet.status === "Found"
-    ).length;
+    const found =
+        pets.filter(
+            pet => pet.status === "Found"
+        ).length;
 
 
-    lostCount.textContent = lost;
-    foundCount.textContent = found;
+    lostCount.textContent =
+        lost;
+
+
+    foundCount.textContent =
+        found;
+
+
+    pointsDisplay.textContent =
+        userPoints.toLocaleString();
+
+
+    pointsEarned.textContent =
+        (
+            2450 +
+            Math.max(
+                0,
+                userPoints - 1250
+            )
+        ).toLocaleString();
+
+
+    const savedHeroes =
+        Number(
+            localStorage.getItem(
+                HEROES_STORAGE_KEY
+            )
+        ) || 128;
+
+
+    communityHeroes.textContent =
+        savedHeroes;
 
 }
 
 
 /* =========================================================
-   FORM VALIDATION
+   HERO LEVEL
+========================================================= */
+
+function updateHeroLevel() {
+
+    const level =
+        Math.max(
+            1,
+            Math.floor(
+                userPoints / 300
+            )
+        );
+
+
+    const currentLevelStart =
+        level * 300;
+
+
+    const nextLevel =
+        (level + 1) * 300;
+
+
+    const progress =
+        Math.min(
+            100,
+            (
+                (
+                    userPoints -
+                    currentLevelStart
+                ) /
+                (
+                    nextLevel -
+                    currentLevelStart
+                )
+            ) * 100
+        );
+
+
+    progressBar.style.width =
+        `${progress}%`;
+
+
+    levelText.textContent =
+        `Level ${level}`;
+
+
+    levelPoints.textContent =
+        `${userPoints.toLocaleString()} / ${nextLevel.toLocaleString()}`;
+
+}
+
+
+/* =========================================================
+   FILTER EVENTS
+========================================================= */
+
+[
+    statusFilter,
+    areaFilter,
+    searchFilter,
+    sortFilter,
+    mineFilter
+].forEach(
+    element => {
+
+        element.addEventListener(
+            "input",
+            renderPets
+        );
+
+        element.addEventListener(
+            "change",
+            renderPets
+        );
+
+    }
+);
+
+
+resetFilters.addEventListener(
+    "click",
+    () => {
+
+        statusFilter.value =
+            "All";
+
+        areaFilter.value =
+            "All";
+
+        searchFilter.value =
+            "";
+
+        sortFilter.value =
+            "newest";
+
+        mineFilter.value =
+            "all";
+
+        renderPets();
+
+    }
+);
+
+
+/* =========================================================
+   FORM SUBMISSION
 ========================================================= */
 
 reportForm.addEventListener(
@@ -1980,7 +3717,9 @@ reportForm.addEventListener(
         event.preventDefault();
 
 
-        if (!reportForm.checkValidity()) {
+        if (
+            !reportForm.checkValidity()
+        ) {
 
             reportForm.reportValidity();
 
@@ -1989,29 +3728,216 @@ reportForm.addEventListener(
         }
 
 
-        toast.classList.add("show");
+        const status =
+            document.getElementById(
+                "reportStatus"
+            ).value;
 
 
-        setTimeout(() => {
+        const name =
+            document.getElementById(
+                "petName"
+            ).value.trim();
 
-            toast.classList.remove("show");
 
-        }, 4000);
+        const species =
+            document.getElementById(
+                "species"
+            ).value;
+
+
+        const breed =
+            document.getElementById(
+                "breed"
+            ).value.trim();
+
+
+        const area =
+            document.getElementById(
+                "area"
+            ).value;
+
+
+        const contact =
+            document.getElementById(
+                "contact"
+            ).value.trim();
+
+
+        const image =
+            document.getElementById(
+                "imageUrl"
+            ).value.trim();
+
+
+        const description =
+            document.getElementById(
+                "description"
+            ).value.trim();
+
+
+        const newPet = {
+
+            id:
+                "user-" +
+                Date.now() +
+                "-" +
+                Math.random()
+                    .toString(36)
+                    .slice(2, 7),
+
+            status:
+                status,
+
+            name:
+                name,
+
+            species:
+                species,
+
+            breed:
+                breed || "Unknown",
+
+            area:
+                area,
+
+            date:
+                new Date()
+                    .toISOString()
+                    .split("T")[0],
+
+            image:
+                image || fallbackImage(),
+
+            contact:
+                contact,
+
+            description:
+                description,
+
+            ownerCreated:
+                true
+
+        };
+
+
+        pets.unshift(
+            newPet
+        );
+
+
+        savePets();
 
 
         reportForm.reset();
+
+
+        renderPets();
+
+        updateStats();
+
+
+        userPoints += 25;
+
+        savePoints();
+
+        updateStats();
+
+        updateHeroLevel();
+
+
+        document
+            .getElementById("reports")
+            .scrollIntoView({
+                behavior: "smooth"
+            });
+
+
+        showToast(
+            "✓ Report Published!",
+            `${name}'s report is now visible on this device. You earned 25 Paw Points.`
+        );
 
     }
 );
 
 
 /* =========================================================
-   INITIALIZE APP
+   TOAST
 ========================================================= */
 
-renderPets(pets);
+let toastTimer;
+
+
+function showToast(
+    title,
+    message
+) {
+
+    toastTitle.textContent =
+        title;
+
+    toastMessage.textContent =
+        message;
+
+
+    toast.classList.add(
+        "show"
+    );
+
+
+    clearTimeout(
+        toastTimer
+    );
+
+
+    toastTimer =
+        setTimeout(
+            () => {
+
+                toast.classList.remove(
+                    "show"
+                );
+
+            },
+            4500
+        );
+
+}
+
+
+/* =========================================================
+   DEMO DATA RESET
+========================================================= */
+
+function checkForDemoReset() {
+
+    const hasData =
+        localStorage.getItem(
+            PET_STORAGE_KEY
+        );
+
+
+    if (!hasData) {
+
+        savePets();
+
+    }
+
+}
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+checkForDemoReset();
+
+renderPets();
 
 updateStats();
+
+updateHeroLevel();
 
 </script>
 
